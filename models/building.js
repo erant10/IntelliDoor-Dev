@@ -11,6 +11,7 @@ module.exports = {
 
     // Create building
     create(buildingObj, callback) {
+        var results = [];
         const DBconfig = config.get('db');
         var connection = new Connection(DBconfig);
 
@@ -18,11 +19,22 @@ module.exports = {
             // If no error, then good to proceed.
             const query =  "INSERT IntelliDoorDB.dbo.Buildings (buildingId, address, adminName, adminPassword) " +
                 "OUTPUT INSERTED.buildingId VALUES (@buildingName, @address, @adminName, @adminPassword);";
-            request = new Request(query, function (err) {
-                if (err) {
-                    console.log(err);
+            request = new Request(query, function (error) {
+                if (error) {
+                    console.log(error);
                 }
+                // parse the results to readable format
+                jsonArray = []
+                results.forEach(function (columns) {
+                    var rowObject ={};
+                    columns.forEach(function(column) {
+                        rowObject[column.metadata.colName] = column.value;
+                    });
+                    jsonArray.push(rowObject)
+                });
+                callback(null, jsonArray);
             });
+
             // add parameters to the request
             request.addParameter('buildingName', TYPES.NVarChar, buildingObj.buildingId);
             request.addParameter('address', TYPES.NVarChar, buildingObj.address);
@@ -31,14 +43,9 @@ module.exports = {
 
             // perform insertion
             request.on('row', function (columns) {
-                columns.forEach(function (column) {
-                    if (column.value === null) {
-                        console.log('NULL');
-                    } else {
-                        console.log("Building id of inserted item is " + column.value);
-                    }
-                });
+                results.push(columns);
             });
+
             connection.execSql(request);
             console.log("Error: ", err);
 
@@ -59,6 +66,7 @@ module.exports = {
                 if (err) {
                     return callback(err);
                 }
+                // parse the results to readable format
                 jsonArray = []
                 results.forEach(function (columns) {
                     var rowObject ={};

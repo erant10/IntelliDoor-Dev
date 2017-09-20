@@ -3,10 +3,10 @@ var router = express.Router();
 
 const ResidentController = require('../controllers/resident_controller');
 
-/* GET /:buildingId/:apartmentId page. */
-router.get('/:buildingId/:apartmentId', ResidentController.getApartment);
+/* GET /:buildingId/:homeId page. */
+router.get('/:buildingId/:homeId', ResidentController.getHome);
 
-/* GET /:buildingId/:apartmentId/:residentId page. */
-router.get('/:buildingId/:apartmentId/:residentId', ResidentController.getResident);
+/* GET /:buildingId/:homeId/:residentId page. */
+router.get('/:buildingId/:homeId/:residentId', ResidentController.getResident);
 
 module.exports = router;

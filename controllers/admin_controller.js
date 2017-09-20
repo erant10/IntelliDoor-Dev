@@ -7,10 +7,10 @@ module.exports = {
 
     // GET '\admin\:buildingId' - building page
     loadBuilding(req, res, next) {
-        // from the building page the admin can add, update or remove an apartment
+        // from the building page the admin can add, update or remove a home
         if (req.session.user === 'admin') {
             // the admin is logged in
-            // TODO: get all apartments in the building
+            // TODO: get all homes in the building
             res.render('admin/building', { title: req.params.buildingId });
         } else {
             res.send('unauthorized');
@@ -18,13 +18,13 @@ module.exports = {
 
     },
 
-    // GET '\admin\:buildingId\:apartmentId' - apartment page
-    loadApartment(req, res, next) {
-        // from the apartment page the admin can add, update or remove a resident from this apartment.
+    // GET '\admin\:buildingId\:homeId' - main page for a specific home
+    loadHome(req, res, next) {
+        // from the home page the admin can add, update or remove a resident from this home.
         if (req.session.user === 'admin') {
             // the admin is logged in
-            // TODO: load the apartment page
-            res.send('admin apartment page');
+            // TODO: load the home page
+            res.send('admin home page');
         } else {
             res.send('unauthorized');
         }

@@ -6,8 +6,8 @@ const BuildingController = require('../controllers/admin_controller');
 /* GET /admin/:buildingId page. */
 router.get('/:buildingId', BuildingController.loadBuilding);
 
-/* GET /admin/:buildingId/:apartmentId page. */
-router.get('/:buildingId/:apartmentId', BuildingController.loadApartment);
+/* GET /admin/:buildingId/:homeId page. */
+router.get('/:buildingId/:homeId', BuildingController.loadHome);
 
 
 /* POST /admin/:buildingId page. */
