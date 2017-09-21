@@ -1,6 +1,6 @@
 var session = require('express-session');
 var building = require('../models/building')
-var config = require('config');
+var home = require('../models/home')
 var bcrypt = require('bcrypt');
 
 module.exports = {
@@ -60,6 +60,20 @@ module.exports = {
             } else {
                 // there were no buildings named @req.body.building
                 res.send(JSON.stringify({message: 'there were no buildings named + ' + req.body.building}));
+            }
+        });
+    },
+
+    // POST '\admin\newHome' - Admin login
+    createHome(req,res,next) {
+        // TODO: 1. verify admin session
+        // TODO: 2. create the home from the input values
+        home.create(req.body, function(error, result) {
+            if(error || result.status !== 200) {
+                res.status(result.status);
+                res.send(result.response);
+            } else {
+                res.send(JSON.stringify(result));
             }
         });
     }

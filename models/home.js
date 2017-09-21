@@ -2,13 +2,12 @@
 * Home model
 **/
 
-var Connection = require('tedious').Connection;
-var Request = require('tedious').Request
 var TYPES = require('tedious').TYPES;
-const config = require('config');
+const sqlDB = require('../DB/sqlCRUD');
 
-const PersonGroup = require('faceAPI/persongroup');
-const Person = require('faceAPI/person');
+// require faceAPI methods
+const PersonGroup = require('./faceAPI/persongroup');
+const Person = require('./faceAPI/person');
 
 module.exports = {
 
@@ -23,60 +22,43 @@ module.exports = {
         // create a person group to the face API
         PersonGroup.create(homeObject, function(error, results) {
             if(error || results.status !== 200) {
-                callback(error, { message: "faceAPI wasn't able to create a person group", faceApiResponse: results } )
+                callback(error, { status: results.status, message: "faceAPI wasn't able to create a person group", response: results });
             } else {
-                // the Person Group was created successfully;
-                // Insert the home into the Homes Table
-                const DBconfig = config.get('db');
-                var connection = new Connection(DBconfig);
+                // the Person Group was created successfully - now insert the home into the Homes Table
+                const query = "INSERT IntelliDoorDB.dbo.Homes " +
+                    "(homeId, description, apartment, buildingId) " +
+                    "OUTPUT INSERTED.homeId VALUES (@homeId, @description, @apartment, @buildingId);";
 
-                connection.on('connect', function (err) {
-                    // If no error, then good to proceed.
-                    const query = "INSERT IntelliDoorDB.dbo.Homes " +
-                                    "(homeId, description, apartment, buildingId) " +
-                                  "OUTPUT INSERTED.homeId VALUES (@homeId, @description, @apartment, @buildingId);";
-                    request = new Request(query, function (error) {
-                        if (error) {
-                            console.log(error);
-                        }
-                        // parse the results to readable format
-                        jsonArray = []
-                        results.forEach(function (columns) {
-                            var rowObject ={};
-                            columns.forEach(function(column) {
-                                rowObject[column.metadata.colName] = column.value;
-                            });
-                            jsonArray.push(rowObject)
-                        });
-                        // call the callback function
-                        callback(null, jsonArray);
-                    });
+                const params = [
+                    {
+                        name: 'homeId',
+                        type: TYPES.NVarChar,
+                        value: homeObject.homeId
+                    },
+                    {
+                        name: 'description',
+                        type: TYPES.NVarChar,
+                        value: homeObject.description
+                    },
+                    {
+                        name: 'apartment',
+                        type: TYPES.Int,
+                        value: homeObject.apartment
+                    },
+                    {
+                        name: 'buildingId',
+                        type: TYPES.NVarChar,
+                        value: homeObject.buildingId
+                    }
+                ];
 
-                    // add parameters to the request
-                    request.addParameter('homeId', TYPES.NVarChar, homeObject.homeId);
-                    request.addParameter('description', TYPES.NVarChar, homeObject.description);
-                    request.addParameter('apartment', TYPES.Int, homeObject.apartment);
-                    request.addParameter('buildingId', TYPES.NVarChar, homeObject.buildingId);
-
-                    // perform insertion
-                    request.on('row', function (columns) {
-                        columns.forEach(function (column) {
-                            if (column.value === null) {
-                                console.log('NULL');
-                            } else {
-                                console.log("Home id of inserted item is " + column.value);
-                            }
-                        });
-                    });
-                    // perform insertion
-                    request.on('row', function (columns) {
-                        results.push(columns);
-                    });
-
-                    connection.execSql(request);
-
+                sqlDB.SqlInsert(query, params, function(error, results) {
+                    if(error) {
+                        callback(error, {status: 400, response: results});
+                    } else {
+                        callback(null, {status: 200, response: results});
+                    }
                 });
-
             }
 
         });
@@ -85,5 +67,10 @@ module.exports = {
     // Get Home by ID
     getOne(homeId, callback) {
         // TODO: implement selecting an home
+    },
+
+    // Get Home by ID
+    remove(homeId, callback) {
+        // TODO: implement removing an home
     }
 }

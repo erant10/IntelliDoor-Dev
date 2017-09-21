@@ -5,9 +5,12 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   // TODO: if a session is already active - redirect to user page (admin or resident), otherwise redirect to landing page
   if (req.session.user === 'admin') {
-    res.redirect('/admin/'+req.session.building)
+      res.redirect('/admin/'+req.session.building)
+  } else if (req.session.user === 'resident') {
+      // TODO: redirect to resident page
+      res.redirect('/resident/')
   } else {
-    res.render('index', {title: 'IntelliDoor'});
+      res.render('index', {title: 'IntelliDoor'});
   }
 });
 

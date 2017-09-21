@@ -4,7 +4,7 @@ const config = require('config');
 const faceApiConfig = config.get('faceApi');
 
 // get the api configuration strings from 'config'
-const headers = faceApiConfig.headers
+const headers = faceApiConfig.headers;
 const host = faceApiConfig.host;
 const url = host + '/persongroups/';
 
@@ -91,19 +91,19 @@ module.exports = {
     create(personGroupObject, callback) {
         var options = {
             method: 'PUT',
-            url: url + '/' + personGroupObject.id,
+            url: url + '/' + personGroupObject.homeId,
             headers: headers,
-            body: { name: personGroupObject.name , userData: personGroupObject.description },
+            body: { name: personGroupObject.homeId , userData: personGroupObject.description },
             json: true
         };
 
         request(options, function (error, response, body) {
-            if (error) {
+            if (error || response.statusCode !== 200) {
                 callback(error, { status: response.statusCode , response: body});
             } else {
                 callback(null, {
                     status: response.statusCode,
-                    response: personGroupObject.id + " created successfully"
+                    response: personGroupObject.homeId + " created successfully"
                 });
             }
         });

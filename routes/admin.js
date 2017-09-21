@@ -13,4 +13,8 @@ router.get('/:buildingId/:homeId', BuildingController.loadHome);
 /* POST /admin/:buildingId page. */
 router.post('/login', BuildingController.loginAdmin);
 
+/* POST /admin/:buildingId page. */
+router.post('/:buildingId/newHome', BuildingController.createHome);
+
+
 module.exports = router;
