@@ -1,7 +1,9 @@
 var session = require('express-session');
 var building = require('../models/building')
 var home = require('../models/home')
+var person = require('../models/person')
 var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 module.exports = {
 
@@ -64,10 +66,34 @@ module.exports = {
         });
     },
 
-    // POST '\admin\newHome' - Admin login
+    // PUT '\newBuilding' - create a building
+    createBuilding(req,res,next) {
+        // TODO: 1. verify admin session
+        bcrypt.hash(req.body.password, saltRounds, function(err, hashed) {
+            if(err) {
+                res.send('there was an error when trying to hash the password.');
+            }
+            newBuilding = {
+                buildingId: req.body.buildingId,
+                address: req.body.address,
+                adminName: req.body.adminName,
+                hashedPassword: hashed
+            }
+            building.create(newBuilding, function(error, result) {
+                if(error || result.status !== 200) {
+                    res.status(result.status);
+                    res.send(result.response);
+                } else {
+                    res.send(JSON.stringify(result));
+                }
+            });
+
+        });
+    },
+
+    // PUT '\admin\newHome' - create Home
     createHome(req,res,next) {
         // TODO: 1. verify admin session
-        // TODO: 2. create the home from the input values
         home.create(req.body, function(error, result) {
             if(error || result.status !== 200) {
                 res.status(result.status);
@@ -75,6 +101,29 @@ module.exports = {
             } else {
                 res.send(JSON.stringify(result));
             }
+        });
+    },
+
+    // PUT '\admin\:buildingId\:homeId\newPerson' - create Person
+    createPerson(req,res,next) {
+        // TODO: 1. verify admin session
+        var personObj = req.body;
+        // encrypt the password before adding the resident
+        bcrypt.hash(personObj.password, saltRounds, function(err, hashed) {
+            if (err) {
+                res.send('there was an error when trying to hash the password.');
+            }
+            personObj.password = hashed;
+            person.create(personObj, function(error, result) {
+                if(error || result.status !== 200) {
+                    console.log("an error occured when trying to create the person.");
+                    console.log(error);
+                    res.status(result.status);
+                    res.send(result.response);
+                } else {
+                    res.send(JSON.stringify(result));
+                }
+            });
         });
     }
 }

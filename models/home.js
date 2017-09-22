@@ -7,7 +7,6 @@ const sqlDB = require('../DB/sqlCRUD');
 
 // require faceAPI methods
 const PersonGroup = require('./faceAPI/persongroup');
-const Person = require('./faceAPI/person');
 
 module.exports = {
 
@@ -19,7 +18,7 @@ module.exports = {
     create(homeObject, callback) {
         // TODO: check that homeObject.homeId and homeObject.apartment are not already taken
         // TODO: check that homeObject.buildingId exists
-        // create a person group to the face API
+        // create a person group in the face API
         PersonGroup.create(homeObject, function(error, results) {
             if(error || results.status !== 200) {
                 callback(error, { status: results.status, message: "faceAPI wasn't able to create a person group", response: results });

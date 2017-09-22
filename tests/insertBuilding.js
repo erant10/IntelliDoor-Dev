@@ -11,15 +11,8 @@ const BUILDING_ID = "building1",
     ADMIN_PASSWORD = "12345678";
 
 
-var DBconfig = {
-    userName: "intellidoor",
-    password: "IOT1234!@#$",
-    server: "intellidoor.database.windows.net",
-    options: {
-        encrypt: true,
-        database: "IntelliDoorDB"
-    }
-}
+var DBconfig = config.get('DB')
+
 var connection = new Connection(DBconfig);
 connection.on('debug', function(eror) { console.log('debug:', eror);});
 connection.on('connect', function (err) {

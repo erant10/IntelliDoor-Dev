@@ -13,8 +13,15 @@ router.get('/:buildingId/:homeId', BuildingController.loadHome);
 /* POST /admin/:buildingId page. */
 router.post('/login', BuildingController.loginAdmin);
 
-/* POST /admin/:buildingId page. */
-router.post('/:buildingId/newHome', BuildingController.createHome);
+
+/* PUT /admin/:buildingId/newHome. */
+router.put('/:buildingId/newHome', BuildingController.createHome);
+
+/* PUT /admin/newBuilding. */
+router.put('/newBuilding', BuildingController.createBuilding);
+
+/* PUT /admin/:buildingId/:homeId/newPerson. */
+router.put('/:buildingId/:homeId/newPerson', BuildingController.createPerson);
 
 
 module.exports = router;
