@@ -53,6 +53,7 @@ module.exports = {
 
                 sqlDB.SqlInsert(query, params, function(error, results) {
                     if(error) {
+                        // TODO: remove the home from the face API
                         callback(error, {status: 400, response: results});
                     } else {
                         callback(null, {status: 200, response: results});

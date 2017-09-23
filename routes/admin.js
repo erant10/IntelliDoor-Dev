@@ -17,11 +17,11 @@ router.post('/login', BuildingController.loginAdmin);
 /* PUT /admin/:buildingId/newHome. */
 router.put('/:buildingId/newHome', BuildingController.createHome);
 
-/* PUT /admin/newBuilding. */
+/* PUT /admin/newBuilding. not used by the admin.*/
 router.put('/newBuilding', BuildingController.createBuilding);
 
-/* PUT /admin/:buildingId/:homeId/newPerson. */
-router.put('/:buildingId/:homeId/newPerson', BuildingController.createPerson);
+/* PUT /admin/:buildingId/:homeId/newResident. */
+router.put('/:buildingId/:homeId/newResident', BuildingController.createResident);
 
 
 module.exports = router;

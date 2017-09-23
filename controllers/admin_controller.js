@@ -1,7 +1,7 @@
 var session = require('express-session');
 var building = require('../models/building')
 var home = require('../models/home')
-var person = require('../models/person')
+var resident = require('../models/resident')
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -104,19 +104,19 @@ module.exports = {
         });
     },
 
-    // PUT '\admin\:buildingId\:homeId\newPerson' - create Person
-    createPerson(req,res,next) {
-        // TODO: 1. verify admin session
-        var personObj = req.body;
+    // PUT '\admin\:buildingId\:homeId\newResident' - create Resident
+    createResident(req, res, next) {
+        // TODO: verify admin session
+        var residentObj = req.body;
         // encrypt the password before adding the resident
-        bcrypt.hash(personObj.password, saltRounds, function(err, hashed) {
+        bcrypt.hash(residentObj.password, saltRounds, function(err, hashed) {
             if (err) {
                 res.send('there was an error when trying to hash the password.');
             }
-            personObj.password = hashed;
-            person.create(personObj, function(error, result) {
+            residentObj.password = hashed;
+            resident.create(residentObj, function(error, result) {
                 if(error || result.status !== 200) {
-                    console.log("an error occured when trying to create the person.");
+                    console.log("an error occured when trying to create the resident.");
                     console.log(error);
                     res.status(result.status);
                     res.send(result.response);

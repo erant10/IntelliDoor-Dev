@@ -10,17 +10,17 @@ const sqlDB = require('../DB/sqlCRUD');
 module.exports = {
 
     /**
-     * Create Person
-     * @param {Object} personObject
+     * Create Resident
+     * @param {Object} residentObject
      * @param {function} callback
      */
-    create(personObject, callback) {
+    create(residentObject, callback) {
         // create a person in the face API
         const personData = {
-            name: personObject.firstName + " " + personObject.lastName,
-            description: personObject.description
+            name: residentObject.firstName + " " + residentObject.lastName,
+            description: residentObject.description
         };
-        Person.create(personObject.homeId, personData, function(error, results) {
+        Person.create(residentObject.homeId, personData, function(error, results) {
             if(error || results.status !== 200) {
                 callback(error, {
                     status: results.status,
@@ -28,7 +28,6 @@ module.exports = {
                     response: results });
             } else {
                 const personId = results.response.id;
-                // TODO: the Person was created successfully - now insert the person into the Person Table
                 const query =
                     "INSERT IntelliDoorDB.dbo.Residents " +
                         "(residentId, firstName, lastName, username, password, " +
@@ -40,19 +39,20 @@ module.exports = {
 
                 const params = [
                     { name: 'residentId', type: TYPES.NVarChar, value: personId },
-                    { name: 'firstName', type: TYPES.NVarChar, value: personObject.firstName },
-                    { name: 'lastName', type: TYPES.NVarChar, value: personObject.lastName },
-                    { name: 'username', type: TYPES.NVarChar, value: personObject.username },
-                    { name: 'password', type: TYPES.NVarChar, value: personObject.password },
-                    { name: 'email', type: TYPES.NVarChar, value: personObject.email },
-                    { name: 'phoneNumber', type: TYPES.NVarChar, value: personObject.phoneNumber },
-                    { name: 'homeId', type: TYPES.NVarChar, value: personObject.homeId },
-                    { name: 'description', type: TYPES.NVarChar, value: personObject.description }
+                    { name: 'firstName', type: TYPES.NVarChar, value: residentObject.firstName },
+                    { name: 'lastName', type: TYPES.NVarChar, value: residentObject.lastName },
+                    { name: 'username', type: TYPES.NVarChar, value: residentObject.username },
+                    { name: 'password', type: TYPES.NVarChar, value: residentObject.password },
+                    { name: 'email', type: TYPES.NVarChar, value: residentObject.email },
+                    { name: 'phoneNumber', type: TYPES.NVarChar, value: residentObject.phoneNumber },
+                    { name: 'homeId', type: TYPES.NVarChar, value: residentObject.homeId },
+                    { name: 'description', type: TYPES.NVarChar, value: residentObject.description }
                 ];
 
                 sqlDB.SqlInsert(query, params, function(error, results) {
                     if(error) {
                         callback(error, {status: 400, response: results});
+                        // TODO: remove the person from the faceAPI
                     } else {
                         callback(null, {status: 200, response: results});
                     }
@@ -63,8 +63,8 @@ module.exports = {
 
     },
 
-    // Get Person by ID
-    getOne(personId, callback) {
-        // TODO: implement selecting a person
+    // Get Resident by ID
+    getOne(residentId, callback) {
+        // TODO: implement selecting a resident
     }
 }
