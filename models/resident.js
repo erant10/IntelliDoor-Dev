@@ -65,6 +65,24 @@ module.exports = {
 
     // Get Resident by ID
     getOne(residentId, callback) {
-        // TODO: implement selecting a resident
+        const query =
+            "SELECT Res.residentId, Res.firstName, Res.lastName, Res.password, " +
+                   "Res.phoneNumber, Res.homeId, Homes.homeId, Homes.buildingId" +
+            "\nFROM IntelliDoorDB.dbo.Residents Res" +
+            "\nINNER JOIN Homes ON Res.homeId=Homes.homeId" +
+            "\nWHERE userName = 'erant'";
+        const idParam = {
+            name: 'residentId',
+            type: TYPES.NVarChar,
+            value: residentId
+        };
+
+        sqlDB.sqlGet(query, idParam, function(error, result) {
+            if(error) {
+                callback(error, result);
+            } else {
+                callback(null, result);
+            }
+        });
     }
 }

@@ -1,18 +1,46 @@
 const guest = require('../models/guest')
 const face = require('../models/face')
+var resident = require('../models/resident')
+var bcrypt = require('bcrypt');
+
 
 module.exports = {
-
-    // GET '/resident/:buildingId/:homeId'
-    getHome(req, res, next) {
-        // TODO: if a session is already active - redirect to building page, otherwise load landing page
-        res.send('resident home page - all residents');
-    },
 
     // GET '/resident/:buildingId/:homeId/:residentId'
     getResident(req, res, next) {
         // TODO: load a resident (faces and guests)
-        res.send('resident home page - one resident');
+        res.render('resident/resident', {title: 'IntelliDoor'});
+    },
+
+    // POST 'resident/login'
+    loginResident(req, res, next){
+        resident.getOne(req.body.username, function(error, results) {
+            if(error){
+                console.log('There was en Error:' + error);
+            }
+            if (results.length > 0) {
+                residentObj = results[0];
+                console.log(residentObj);
+                bcrypt.compare(req.body.password, residentObj.password, function(err, match) {
+                    // check password
+                    if (match) {
+                        // the resident is authorized - Start a session
+                        req.session.user = 'user';
+                        req.session.username = req.body.username;
+                        var urlSplitted = [residentObj.buildingId, residentObj.homeId, req.body.username];
+                        res.redirect(urlSplitted.join("/"));
+                    } else {
+                        // the password doesn't match - return error message with status 401 (unauthorized)
+                        res.status(401);
+                        res.send(JSON.stringify({message: 'password doesn\'t match'}));
+                    }
+                });
+            } else {
+                // username doesn't exist
+                res.status(401);
+                res.send(JSON.stringify({message: 'sorry, the user + ' + req.body.username + 'doesn\'t exist.'}));
+            }
+        });
     },
 
     /* PUT /:buildingId/:homeId/:residentId/newGuest - create a new guest. */

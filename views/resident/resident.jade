@@ -1,0 +1,41 @@
+extends ../layout
+
+block content
+    nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+        a.navbar-brand(href='#') IntelliDoor
+        .collapse.navbar-collapse
+            ul.navbar-nav.ml-auto
+                li.nav-item
+                    a.nav-link(href='/logout') Logout
+
+    .container-fluid
+        .row
+            nav.col-sm-3.col-md-2.d-none.d-sm-block.bg-light.sidebar
+                // Nav tabs
+                ul.nav.nav-pills.flex-column(role='tablist', style="padding:20px 0;")
+                    h3 Profile
+                    li.nav-item
+                        a.nav-link.active(data-toggle='tab', href='#home', role='tab') Eran Toledano
+                    hr(style="color:black")
+                    h3 guests
+                    li.nav-item
+                        a.nav-link(data-toggle='tab', href='#profile', role='tab') Mor Cohen
+                    li.nav-item
+                        a.nav-link(data-toggle='tab', href='#messages', role='tab') Tom Lapid
+                    li.nav-item
+                        a.nav-link(data-toggle='tab', href='#settings', role='tab') Alon Fine
+                    li.nav-item
+                        a.nav-link(href='#')
+                            i.fa.fa-plus
+
+            main.col-sm-9.ml-sm-auto.col-md-10.pt-3(role='main')
+                // Tab panes
+                .tab-content
+                    #home.tab-pane.active(role='tabpanel') You
+
+                    #profile.tab-pane(role='tabpanel') guest1
+                    #messages.tab-pane(role='tabpanel') guest2
+                    #settings.tab-pane(role='tabpanel') guest3
+                    - for (var i=0; i<30; ++i) {
+                        br
+                    - }

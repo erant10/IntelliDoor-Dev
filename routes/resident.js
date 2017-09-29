@@ -3,12 +3,12 @@ var router = express.Router();
 
 const ResidentController = require('../controllers/resident_controller');
 
-/* GET /:buildingId/:homeId page. */
-router.get('/:buildingId/:homeId', ResidentController.getHome);
-
 /* GET /:buildingId/:homeId/:residentId page. */
 router.get('/:buildingId/:homeId/:residentId', ResidentController.getResident);
 
+
+/* POST /:buildingId/:homeId/:residentId/newFace - create a new face. */
+router.post('/login', ResidentController.loginResident);
 
 /* POST /:buildingId/:homeId/:residentId/newFace - create a new face. */
 router.post('/:buildingId/:homeId/:residentId/newFace', ResidentController.createFace);

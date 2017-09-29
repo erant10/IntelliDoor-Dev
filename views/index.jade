@@ -1,21 +1,67 @@
-extends layout
+extends landing_layout
 
 block content
-  h1= title
-  button.btn.btn-primary(type='button', data-toggle='modal', data-target='#loginModal') Login
+  // Navigation
+  nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top
+    .container
+      a.navbar-brand(href='#') IntelliDoor
+      button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarResponsive', aria-controls='navbarResponsive', aria-expanded='false', aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarResponsive.collapse.navbar-collapse
+        ul.navbar-nav.ml-auto
+          li.nav-item
+            a.nav-link(data-toggle='modal', data-target='#loginModal') Login
+  header
+    #carouselExampleIndicators.carousel.slide(data-ride='carousel')
+      ol.carousel-indicators
+        li.active(data-target='#carouselExampleIndicators', data-slide-to='0')
+        li(data-target='#carouselExampleIndicators', data-slide-to='1')
+        li(data-target='#carouselExampleIndicators', data-slide-to='2')
+      .carousel-inner(role='listbox')
+        // Slide One - Set the background image for this slide in the line below
+        .carousel-item.active(style="background-image: url('http://cdn.makeuseof.com/wp-content/uploads/2017/07/vuebell-smart-wifi-doorbell.jpg?x81309')")
+          .carousel-caption.d-none.d-md-block
+            h3 IntelliDoor
+        // Slide Two - Set the background image for this slide in the line below
+        .carousel-item(style="background-image: url('./images/intellidoor.png')")
+          .carousel-caption.d-none.d-md-block
+        // Slide Three - Set the background image for this slide in the line below
+        .carousel-item(style="background-image: url('http://lifefortheinnocent.org/wp-content/uploads/sites/7/2014/09/Man-Ringing-Doorbell-01.png')")
+          .carousel-caption.d-none.d-md-block
+            h3 IntelliDoor
+      a.carousel-control-prev(href='#carouselExampleIndicators', role='button', data-slide='prev')
+        span.carousel-control-prev-icon(aria-hidden='true')
+        span.sr-only Previous
+      a.carousel-control-next(href='#carouselExampleIndicators', role='button', data-slide='next')
+        span.carousel-control-next-icon(aria-hidden='true')
+        span.sr-only Next
+  // Page Content
+  section.py-5
+    .container.text-center
+      h1 Welcome to IntelliDoor
+      h4 Answering the door has never been easier.
+      p IntelliDoor will make access to your home easy and secure.
+      button.btn.btn-primary.btn-lg(type='button', data-toggle='modal', data-target='#loginModal') Start
+  // Footer
+  footer.py-5.bg-dark
+    .container
+      p.m-0.text-center.text-white Copyright © IntelliDoor 2017
+    // /.container
+
+
   #loginModal.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
     .modal-dialog(role='document')
       .modal-content
-        .modal-header
-          h5#loginModalLabel.modal-title Login
-          button.close(type='button', data-dismiss='modal', aria-label='Close')
-            span(aria-hidden='true') ×
-        #loginModalBody.modal-body
+        .modal-header(style="padding:0; padding-right:15px;")
           ul.nav.nav-tabs
             li.nav-item
               a.nav-link.active(href='#resident-login', data-toggle='tab') Resident
             li.nav-item
               a.nav-link(href='#admin-login', data-toggle='tab') Admin
+
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') ×
+        #loginModalBody.modal-body
           #loginModalContent.tab-content
             #resident-login.tab-pane.active
               br
@@ -27,7 +73,7 @@ block content
                   label(for='resident-password') Password
                   input#resident-password.form-control(type='password', placeholder='Password', name="password")
                 .form-group.text-center
-                  button.btn.btn-primary(type='submit') Login
+                  button.btn.btn-success(type='submit') Login
 
             #admin-login.tab-pane
               br
@@ -42,8 +88,10 @@ block content
                   label(for='admin-password') Password
                   input#admin-password.form-control(type='password', placeholder='Password', name="password")
                 .form-group.text-center
-                  button.btn.btn-primary(type='submit') Login
+                  button.btn.btn-success(type='submit') Login
 
-        .modal-footer
-          button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+  // Bootstrap core JavaScript
+  script(src='javascripts/vendor/jquery/jquery.min.js')
+  script(src='javascripts/vendor/popper/popper.min.js')
+  script(src='javascripts/vendor/bootstrap/js/bootstrap.min.js')
 

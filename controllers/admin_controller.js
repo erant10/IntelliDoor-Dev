@@ -39,9 +39,9 @@ module.exports = {
                 console.log('There was en Error:' + error);
             }
             if (results.length > 0) {
-                buildinfObj = results[0];
-                bcrypt.compare(req.body.password, buildinfObj.adminPassword, function(err, match) {
-                    if (buildinfObj.adminName === req.body.username) {
+                buildingObj = results[0];
+                bcrypt.compare(req.body.password, buildingObj.adminPassword, function(err, match) {
+                    if (buildingObj.adminName === req.body.username) {
                         // the admin is authorized for this building - check password
                         if (match) {
                             // the admin is authorized - Start a session
