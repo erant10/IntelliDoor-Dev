@@ -1,0 +1,52 @@
+extends ../layout
+include admin_mixins
+
+block content
+    script(src="../javascripts/admin.js")
+    nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+        a.navbar-brand(href='#') IntelliDoor
+        .collapse.navbar-collapse
+            ul.navbar-nav.ml-auto
+                li.nav-item
+                    a.nav-link(href='/logout') Logout
+
+    .container-fluid
+        .row
+            nav.col-sm-3.col-md-2.d-none.d-sm-block.bg-light.sidebar
+                // Nav tabs
+                ul.nav.nav-pills.flex-column(role='tablist', style="padding:20px 0;")
+                    h3 Welcome
+                    li.nav-item
+                        a.nav-link.active(data-toggle='tab', href='#home_admin', role='tab') Admin
+                    hr(style="color:black")
+                    h3 Homes
+                    li.nav-item
+                        a.nav-link(data-toggle='tab', href='#home_1', role='tab') Apartment 1
+                    li.nav-item
+                        a.nav-link(data-toggle='tab', href='#home_2', role='tab') Apartment 2
+                    li.nav-item
+                        a.nav-link(data-toggle='tab', href='#home_3', role='tab') Apartment 3
+                    br
+                    li.nav-item
+                        button.nav-link(class='btn btn-link', data-toggle="modal", data-target="#newHomeModal")
+                            i.fa.fa-plus &nbsp;
+                            | Add Home
+
+            main.col-sm-9.ml-sm-auto.col-md-10.pt-3(role='main')
+                // Tab panes
+                .tab-content
+                    #home_admin.tab-pane.active(role='tabpanel')
+                        +admin_body({name: "Building 1"})
+                    // homes_list
+                    #home_1.tab-pane(role='tabpanel')
+                        +home_body("apt1")
+                    #home_2.tab-pane(role='tabpanel')
+                        +home_body("apt2")
+                    #home_3.tab-pane(role='tabpanel')
+                        +home_body("apt3")
+                    - for (var i=0; i<12; ++i) {
+                        br
+                    - }
+
+
+    +newHomeModal()

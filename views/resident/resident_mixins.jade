@@ -1,0 +1,70 @@
+mixin resident_body(resident)
+    h4 Welcome, #{resident.name}
+    p Building: building 1
+    p Home: apartment1a
+    p description: This is the family apartment
+    h5 Faces
+    .img-well
+        img.rounded.float-left(data-src='holder.js/200x200', alt='200x200', src='data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_15ed220dcfe%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_15ed220dcfe%22%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2274.09375%22%20y%3D%22104.6546875%22%3E200x200%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E', data-holder-rendered='true', style='width: 200px; height: 200px;')
+    form(style="margin-top:20px")
+        .form-row.align-items-center
+            .col-sm-3
+                .form-group
+                    label(for='FaceInput') Add Faces:
+                    input#FaceInput.form-control-file(type='file', multiple)
+            .col-auto
+                button.btn.btn-sm.btn-primary(type='submit') Upload
+
+
+
+
+
+mixin guest_body(name)
+    br
+    h4 Guest: #{name}
+    p description: My friend
+    button.btn-link(href="#", style="color:red;") delete guest
+    br
+    br
+    h5 Faces
+    .img-well
+        img.rounded.float-left(data-src='holder.js/200x200', alt='200x200', src='data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_15ed220dcfe%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_15ed220dcfe%22%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2274.09375%22%20y%3D%22104.6546875%22%3E200x200%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E', data-holder-rendered='true', style='width: 200px; height: 200px;')
+
+    form(style="margin-top:20px")
+        .form-row.align-items-center
+            .col-sm-3
+                .form-group
+                    label(for='FaceInput') Add Faces:
+                    input#FaceInput.form-control-file(type='file', multiple)
+            .col-auto
+                button.btn.btn-sm.btn-primary(type='submit') Upload
+
+
+mixin guestModal()
+    // Modal
+    #newGuestModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='guestModalTitle', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#guestModalTitle.modal-title Add A new Guest
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                .modal-body
+                    .form-group
+                        label(for='guestFirstName') First Name
+                        input#guestFirstName.form-control(type='text', placeholder='Example: John')
+                    .form-group
+                        label(for='guestLastName') Last Name
+                        input#guestLastName.form-control(type='text', placeholder='Example: Snow')
+                    .form-group
+                        label(for='guestPhone') Phone Number
+                        input#guestPhone.form-control(type='tel', placeholder='Example: +972521234567')
+                    .form-group
+                        label(for='guestDescription') Description
+                        input#guestDescription.form-control(type='text', placeholder='Example: My best Friend')
+
+
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                    button.btn.btn-primary(type='button') Create Guest
+

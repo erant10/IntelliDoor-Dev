@@ -1,4 +1,5 @@
 extends ../layout
+include resident_mixins
 
 block content
     nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
@@ -13,29 +14,38 @@ block content
             nav.col-sm-3.col-md-2.d-none.d-sm-block.bg-light.sidebar
                 // Nav tabs
                 ul.nav.nav-pills.flex-column(role='tablist', style="padding:20px 0;")
-                    h3 Profile
+                    h3 Welcome
                     li.nav-item
                         a.nav-link.active(data-toggle='tab', href='#home', role='tab') Eran Toledano
                     hr(style="color:black")
-                    h3 guests
+                    h3 Guests
                     li.nav-item
-                        a.nav-link(data-toggle='tab', href='#profile', role='tab') Mor Cohen
+                        a.nav-link(data-toggle='tab', href='#guest1', role='tab') Mor Cohen
                     li.nav-item
-                        a.nav-link(data-toggle='tab', href='#messages', role='tab') Tom Lapid
+                        a.nav-link(data-toggle='tab', href='#guest2', role='tab') Tom Lapid
                     li.nav-item
-                        a.nav-link(data-toggle='tab', href='#settings', role='tab') Alon Fine
+                        a.nav-link(data-toggle='tab', href='#guest3', role='tab') Alon Fine
+                    br
                     li.nav-item
-                        a.nav-link(href='#')
-                            i.fa.fa-plus
+                        button.nav-link(class='btn btn-link', data-toggle="modal", data-target="#newGuestModal")
+                            i.fa.fa-plus &nbsp;
+                            | Add Guest
 
             main.col-sm-9.ml-sm-auto.col-md-10.pt-3(role='main')
                 // Tab panes
                 .tab-content
-                    #home.tab-pane.active(role='tabpanel') You
+                    #home.tab-pane.active(role='tabpanel')
+                        +resident_body({name: "Eran Toledano"})
 
-                    #profile.tab-pane(role='tabpanel') guest1
-                    #messages.tab-pane(role='tabpanel') guest2
-                    #settings.tab-pane(role='tabpanel') guest3
-                    - for (var i=0; i<30; ++i) {
+                    #guest1.tab-pane(role='tabpanel')
+                        +guest_body("Mor Cohen")
+                    #guest2.tab-pane(role='tabpanel')
+                        +guest_body("Tom Lapid")
+                    #guest3.tab-pane(role='tabpanel')
+                        +guest_body("Alon Fine")
+                    - for (var i=0; i<15; ++i) {
                         br
                     - }
+
+
+    +guestModal()

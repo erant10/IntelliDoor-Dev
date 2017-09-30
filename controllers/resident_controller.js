@@ -27,8 +27,7 @@ module.exports = {
                         // the resident is authorized - Start a session
                         req.session.user = 'user';
                         req.session.username = req.body.username;
-                        var urlSplitted = [residentObj.buildingId, residentObj.homeId, req.body.username];
-                        res.redirect(urlSplitted.join("/"));
+                        res.redirect(residentObj.homeId + "/" + req.body.username);
                     } else {
                         // the password doesn't match - return error message with status 401 (unauthorized)
                         res.status(401);

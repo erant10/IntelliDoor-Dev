@@ -10,26 +10,15 @@ module.exports = {
     // GET '\admin\:buildingId' - building page
     loadBuilding(req, res, next) {
         // from the building page the admin can add, update or remove a home
+        console.log("session: " + JSON.stringify(req.session));
         if (req.session.user === 'admin') {
             // the admin is logged in
             // TODO: get all homes in the building
-            res.render('admin/building', { title: req.params.buildingId });
+            res.render('admin/admin', { title: req.params.buildingId });
         } else {
             res.send('unauthorized');
         }
 
-    },
-
-    // GET '\admin\:buildingId\:homeId' - main page for a specific home
-    loadHome(req, res, next) {
-        // from the home page the admin can add, update or remove a resident from this home.
-        if (req.session.user === 'admin') {
-            // the admin is logged in
-            // TODO: load the home page
-            res.send('admin home page');
-        } else {
-            res.send('unauthorized');
-        }
     },
 
     // POST '\admin\login' - Admin login
