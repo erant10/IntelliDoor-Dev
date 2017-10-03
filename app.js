@@ -23,12 +23,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // initialize the session and set a cookie
 app.use(session({secret: 'ssshhhhh'}));
 
-// reqire all app routes
+// require all main app routes
 var index = require('./routes/index');
 var admin = require('./routes/admin');
 var resident = require('./routes/resident');
 
-// Set app routes
+// Set up main app routes
 app.use('/', index);
 app.use('/admin', admin);
 app.use('/resident', resident);

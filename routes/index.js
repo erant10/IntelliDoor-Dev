@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
       // TODO: redirect to resident page
       res.redirect('/resident/')
   } else {
-      res.render('index', {title: 'IntelliDoor'});
+      res.render('landing/index', {title: 'IntelliDoor'});
   }
 });
 

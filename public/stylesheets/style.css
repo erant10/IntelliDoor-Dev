@@ -1,6 +1,7 @@
-body {
-  padding: 50px;
+body, .container-fluid, .row {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  min-height: 100%;
+  height: 100%;
 }
 
 a {
@@ -13,4 +14,20 @@ a {
 
 #loginModalBody {
   padding: 0px;
+}
+
+.img-well img {
+  margin: 12px;
+}
+
+.img-well {
+  background-color: #dddddd;
+  border-radius: 10px;
+  margin-right: 40px;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.tab-content {
+  padding: 3% 5%;
 }

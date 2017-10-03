@@ -40,10 +40,10 @@ module.exports = {
         ];
 
         sqlDB.SqlInsert(query, params, function(error, results) {
-            if(error) {
-                callback(error, results);
+            if (error) {
+                callback(error, {status: 400, response: results});
             } else {
-                callback(null, results);
+                callback(null, {status: 200, response: results});
             }
         });
 

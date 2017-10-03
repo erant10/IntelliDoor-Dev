@@ -1,33 +1,24 @@
 var session = require('express-session');
 var building = require('../models/building')
 var home = require('../models/home')
+var resident = require('../models/resident')
 var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 module.exports = {
 
     // GET '\admin\:buildingId' - building page
     loadBuilding(req, res, next) {
         // from the building page the admin can add, update or remove a home
+        console.log("session: " + JSON.stringify(req.session));
         if (req.session.user === 'admin') {
             // the admin is logged in
             // TODO: get all homes in the building
-            res.render('admin/building', { title: req.params.buildingId });
+            res.render('admin/admin', { title: req.params.buildingId });
         } else {
             res.send('unauthorized');
         }
 
-    },
-
-    // GET '\admin\:buildingId\:homeId' - main page for a specific home
-    loadHome(req, res, next) {
-        // from the home page the admin can add, update or remove a resident from this home.
-        if (req.session.user === 'admin') {
-            // the admin is logged in
-            // TODO: load the home page
-            res.send('admin home page');
-        } else {
-            res.send('unauthorized');
-        }
     },
 
     // POST '\admin\login' - Admin login
@@ -37,9 +28,9 @@ module.exports = {
                 console.log('There was en Error:' + error);
             }
             if (results.length > 0) {
-                buildinfObj = results[0];
-                bcrypt.compare(req.body.password, buildinfObj.adminPassword, function(err, match) {
-                    if (buildinfObj.adminName === req.body.username) {
+                buildingObj = results[0];
+                bcrypt.compare(req.body.password, buildingObj.adminPassword, function(err, match) {
+                    if (buildingObj.adminName === req.body.username) {
                         // the admin is authorized for this building - check password
                         if (match) {
                             // the admin is authorized - Start a session
@@ -64,10 +55,34 @@ module.exports = {
         });
     },
 
-    // POST '\admin\newHome' - Admin login
+    // PUT '\newBuilding' - create a building
+    createBuilding(req,res,next) {
+        // TODO: 1. verify admin session
+        bcrypt.hash(req.body.password, saltRounds, function(err, hashed) {
+            if(err) {
+                res.send('there was an error when trying to hash the password.');
+            }
+            newBuilding = {
+                buildingId: req.body.buildingId,
+                address: req.body.address,
+                adminName: req.body.adminName,
+                hashedPassword: hashed
+            }
+            building.create(newBuilding, function(error, result) {
+                if(error || result.status !== 200) {
+                    res.status(result.status);
+                    res.send(result.response);
+                } else {
+                    res.send(JSON.stringify(result));
+                }
+            });
+
+        });
+    },
+
+    // PUT '\admin\newHome' - create Home
     createHome(req,res,next) {
         // TODO: 1. verify admin session
-        // TODO: 2. create the home from the input values
         home.create(req.body, function(error, result) {
             if(error || result.status !== 200) {
                 res.status(result.status);
@@ -75,6 +90,29 @@ module.exports = {
             } else {
                 res.send(JSON.stringify(result));
             }
+        });
+    },
+
+    // PUT '\admin\:buildingId\:homeId\newResident' - create Resident
+    createResident(req, res, next) {
+        // TODO: verify admin session
+        var residentObj = req.body;
+        // encrypt the password before adding the resident
+        bcrypt.hash(residentObj.password, saltRounds, function(err, hashed) {
+            if (err) {
+                res.send('there was an error when trying to hash the password.');
+            }
+            residentObj.password = hashed;
+            resident.create(residentObj, function(error, result) {
+                if(error || result.status !== 200) {
+                    console.log("an error occured when trying to create the resident.");
+                    console.log(error);
+                    res.status(result.status);
+                    res.send(result.response);
+                } else {
+                    res.send(JSON.stringify(result));
+                }
+            });
         });
     }
 }
