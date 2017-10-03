@@ -1,6 +1,8 @@
 ﻿using IntelliDoor.Infrastructure;
 using System;
+using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 
 namespace IntelliDoor.Logic
@@ -12,11 +14,6 @@ namespace IntelliDoor.Logic
 
         private DoorLock()
         {
-            //timer = new DispatcherTimer()
-            //{
-            //    Interval = TimeSpan.FromMilliseconds(3000)  // the door will open for 5 seconds
-            //};
-            //timer.Tick += Lock;
             timer = new Timer(Lock, null, Timeout.Infinite, Timeout.Infinite);
         }
 
@@ -28,15 +25,14 @@ namespace IntelliDoor.Logic
 
         public void Unlock()
         {
-            //timer.Start();
-            timer.Change(0, 3000);
+            Debug.WriteLine("unlock invoked");
+            timer.Change(5000, Timeout.Infinite);
             led.TurnOn();
         }
 
         public void Lock(object sender)
         {
-            // , object e
-            //timer.Stop();
+            Debug.WriteLine("lock invoked");
             timer.Change(Timeout.Infinite, Timeout.Infinite);
             led.TurnOff();
         }

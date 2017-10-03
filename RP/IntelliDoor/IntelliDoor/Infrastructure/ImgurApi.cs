@@ -13,15 +13,16 @@ namespace IntelliDoor.Infrastructure
         private const string CLIENT_ID = "e6376674cfd42a7";
         private const string CLIENT_SECRET = "d43effe737e76af710504d8f527b68d9db915ba7";
         private ImgurClient client;
+        private ImageEndpoint endpoint; 
 
         public ImgurApi()
         {
             client = new ImgurClient(CLIENT_ID, CLIENT_SECRET);
+            endpoint = new ImageEndpoint(client);
         }
 
         public async Task<string> UploadImageFromFileAsync(StorageFile photo)
         {
-            var endpoint = new ImageEndpoint(client);
             IImage image = await Task.Run(async () => 
             {
                 using (var fs = new FileStream(photo.Path, FileMode.Open))
