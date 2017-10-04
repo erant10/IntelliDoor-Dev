@@ -74,6 +74,10 @@ module.exports = {
                 }
             }
         );
+    },
+
+    uploadImage(req, res, next) {
+        res.send("image uploaded");
     }
 
 }

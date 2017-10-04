@@ -2,6 +2,7 @@ extends ../layout
 include resident_mixins
 
 block content
+    script(src="../../javascripts/resident.js")
     nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
         a.navbar-brand(href='#') IntelliDoor
         .collapse.navbar-collapse
@@ -38,7 +39,7 @@ block content
                         +resident_body({name: "Eran Toledano"})
 
                     #guest1.tab-pane(role='tabpanel')
-                        +guest_body("Mor Cohen")
+                        +guest_body({firstName: "Mor", lastName:"Cohen", guestId: "abc"})
                     #guest2.tab-pane(role='tabpanel')
                         +guest_body("Tom Lapid")
                     #guest3.tab-pane(role='tabpanel')
@@ -48,4 +49,4 @@ block content
                     - }
 
 
-    +guestModal()
+    +guestModal({firstName:'Alon', lastName:'Fine', aptNumber:1, buildingId:'building1'})

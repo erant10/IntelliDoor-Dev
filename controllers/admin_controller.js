@@ -13,7 +13,7 @@ module.exports = {
         console.log("session: " + JSON.stringify(req.session));
         if (req.session.user === 'admin') {
             // the admin is logged in
-            // TODO: get all homes in the building
+            // TODO: get all building info and homes json in the building from the db
             res.render('admin/admin', { title: req.params.buildingId });
         } else {
             res.send('unauthorized');
