@@ -75,7 +75,7 @@ namespace IntelliDoor.Infrastructure
             string queryString = I2cDevice.GetDeviceSelector();
             var deviceList = DeviceInformation.FindAllAsync(queryString).AsTask().GetAwaiter().GetResult();
             bool connected = _handler.OpenConnection(deviceList[0].Id).ConfigureAwait(false).GetAwaiter().GetResult();
-            Debug.Write(connected);
+            Debug.WriteLine("keypad connected: " + connected);
         }
     }
 }

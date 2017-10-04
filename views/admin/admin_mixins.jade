@@ -59,15 +59,14 @@ mixin newHomeModal()
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
                         span(aria-hidden='true') ×
                 .modal-body
-                    .form-group
-                        label(for='guestFirstName') Home Number
-                        input#guestFirstName.form-control(type='number', placeholder='Example: 4')
-                    .form-group
-                        label(for='guestLastName') Description
-                        input#guestLastName.form-control(type='text', placeholder='Example: The Stark Family')
-
+                    form#newHomeForm
+                        .form-group.hidden
+                            input#BuildingId.form-control(type='text',value = 'building1' ,hidden)
+                        .form-group
+                            label(for='HomeNumber') Home Number
+                            input#HomeNumber.form-control(type='number', placeholder='Example: 4')
 
                 .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Close
-                    button.btn.btn-primary(type='button') Create Guest
+                    button#submitNewHomeButton.btn.btn-primary(type='button') Create Home
 

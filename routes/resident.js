@@ -13,6 +13,9 @@ router.post('/login', ResidentController.loginResident);
 /* POST /:homeId/:residentId/newFace - create a new face. */
 router.post('/:buildingId/:homeId/:residentId/newFace', ResidentController.createFace);
 
+/* POST /uploadimage - create a new face. */
+router.post('/uploadimage', ResidentController.uploadImage);
+
 
 /* PUT /:homeId/:residentId/newGuest - create a new guest. */
 router.put('/:buildingId/:homeId/:residentId/newGuest', ResidentController.createGuest);
