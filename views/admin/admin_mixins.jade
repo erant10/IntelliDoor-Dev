@@ -1,69 +1,53 @@
-mixin admin_body(data)
-    h4 Building Name:
-    p #{data.name}
+mixin admin_body(building, entries)
+    h4 Building: #{building.buildingId}
     p
         strong Address:&nbsp;
-        | 23 55th street, NY, NY, USA
+        | #{building.address}
     p
         strong Description:&nbsp;
-        | First Building in the system.
+        | #{building.description}
     br
     h5 Building Entries
-    table#myTable.display(cellspacing='0', width='100%')
+    table.myTable.display(cellspacing='0', width='100%')
         thead
             tr
                 th Date
-                th Time
                 th Home
-                th Name
+                th Guest Of
                 th Allowed
                 th image
         tbody
-            tr
-                td 2017/04/25
-                td 12:33:01
-                td Apartment 1
-                td Eran Toledano
-                td Yes
-                td
-                    a(href="#") View
-            tr
-                td 2017/04/25
-                td 12:33:23
-                td Apartment 2
-                td Unknown
-                td Yes
-                td
-                    a(href="#") View
-            tr
-                td 2017/04/25
-                td 14:22:01
-                td Apartment 3
-                td Mor Cohen
-                td Yes
-                td
-                    a(href="#") View
-            tr
-                td 2017/04/25
-                td 22:12:01
-                td Apartment 1
-                td Unknown
-                td No
-                td
-                    a(href="#") View
-            tr
-                td 2017/04/26
-                td 00:33:01
-                td Apartment 1
-                td Eran Toledano
-                td Yes
-                td
-                    a(href="#") View
+            for entry in entries
+                tr
+                    td #{entry.time}
+                    td #{entry.homeEntered}
+                    td #{entry.firstName} #{entry.lastName}
+                    td #{entry.authorized}
+                    td
+                        a(href="#{entry.faceUrl}") View
 
 
-
-mixin home_body(name)
-    p= name
+mixin home_body(homeId, residents)
+    h5 Residents of #{homeId}
+    table.myTable.display(cellspacing='0', width='100%')
+        thead
+            tr
+                th Name
+                th Username
+                th Email
+                th Phone
+                th Is Default?
+                th remove
+        tbody
+            for resident in residents
+                tr
+                    td #{resident.firstName} #{resident.lastName}
+                    td #{resident.userName}
+                    td #{resident.email}
+                    td #{resident.phoneNumber}
+                    td #{resident.defaultResident === resident.residentId}
+                    td
+                        a(href="#", style="color:red") delete
 
 mixin newHomeModal()
     // Modal

@@ -4,6 +4,7 @@
 
 var TYPES = require('tedious').TYPES;
 const sqlDB = require('../DB/sqlCRUD');
+const parsers = require('../helpers/parsers');
 
 module.exports = {
 
@@ -67,6 +68,48 @@ module.exports = {
                 callback(error, result);
             } else {
                 callback(null, result);
+            }
+        });
+    },
+
+    getEntries(buildingId, callback) {
+        const query = "SELECT E.personId, E.time, E.recognised, E.faceUrl, E.authorized ,E.homeId AS homeEntered, R.firstName, R.lastName\n" +
+            "  FROM Entries E\n" +
+            "  JOIN Residents R ON E.homeId = R.homeId\n" +
+            "  JOIN Homes H ON E.homeId = H.homeId\n" +
+            "  JOIN Buildings B ON H.buildingId = B.buildingId\n" +
+            "  WHERE B.buildingId = @buildingId;";
+        const idParam = {
+            name: 'buildingId',
+            type: TYPES.NVarChar,
+            value: buildingId
+        };
+
+        sqlDB.sqlGet(query, idParam, function(error, result) {
+            if(error) {
+                callback(error, result);
+            } else {
+                callback(null, result);
+            }
+        });
+
+    },
+
+    getHomes(buildingId, callback) {
+        const query = "SELECT H.homeId, H.apartment, H.defaultResident, H.description, R.residentId, R.userName, R.password, R.firstName, R.lastName, R.phoneNumber, R.description, R.email\n" +
+            "  FROM Homes H\n" +
+            "  LEFT JOIN Residents R ON H.homeId = R.homeId\n" +
+            "  WHERE H.buildingId = 'building1'"
+        const idParam = {
+            name: 'buildingId',
+            type: TYPES.NVarChar,
+            value: buildingId
+        };
+        sqlDB.sqlGet(query, idParam, function(error, result) {
+            if(error) {
+                callback(error, result);
+            } else {
+                callback(null, parsers.groupBy(result, 'homeId'));
             }
         });
     }

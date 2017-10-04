@@ -20,12 +20,9 @@ block content
                         a.nav-link.active(data-toggle='tab', href='#home_admin', role='tab') Admin
                     hr(style="color:black")
                     h3 Homes
-                    li.nav-item
-                        a.nav-link(data-toggle='tab', href='#home_1', role='tab') Apartment 1
-                    li.nav-item
-                        a.nav-link(data-toggle='tab', href='#home_2', role='tab') Apartment 2
-                    li.nav-item
-                        a.nav-link(data-toggle='tab', href='#home_3', role='tab') Apartment 3
+                    for home in Object.keys(homes)
+                        li.nav-item
+                            a.nav-link(data-toggle='tab', href="#"+home, role='tab') #{home}
                     br
                     li.nav-item
                         button.nav-link(class='btn btn-link', data-toggle="modal", data-target="#newHomeModal")
@@ -36,14 +33,11 @@ block content
                 // Tab panes
                 .tab-content
                     #home_admin.tab-pane.active(role='tabpanel')
-                        +admin_body({name: "Building 1"})
+                        +admin_body(building, entries)
                     // homes_list
-                    #home_1.tab-pane(role='tabpanel')
-                        +home_body("apt1")
-                    #home_2.tab-pane(role='tabpanel')
-                        +home_body("apt2")
-                    #home_3.tab-pane(role='tabpanel')
-                        +home_body("apt3")
+                    for homeId in Object.keys(homes)
+                        div(id=homeId).tab-pane(role='tabpanel')
+                            +home_body(homeId, homes[homeId])
                     - for (var i=0; i<12; ++i) {
                         br
                     - }
