@@ -2,15 +2,18 @@ mixin resident_body(resident)
     h4 Welcome, #{resident.info.firstName} #{resident.info.lastName}
     p Home: #{resident.info.homeId}
     h5 Faces
-    .img-well
+    .img-well(id='images_'+resident.info.residentId)
         for face in resident.faces
             img.rounded.float-left(data-src='holder.js/200x200', alt='200x200', src=face.url, data-holder-rendered='true', style='width: 200px; height: 200px;')
-    form(style="margin-top:20px")
+    form.uploadImage(id='upload_'+resident.info.residentId, style="margin-top:20px", enctype="multipart/form-data")
+        input(type='text', name='homeId', value=resident.info.homeId ,hidden)
+        input(type='text', name='personId', value=resident.info.residentId ,hidden)
+        input(type='number', name='isGuest', value=0, hidden)
         .form-row.align-items-center
             .col-sm-3
                 .form-group
                     label(for='FaceInput') Add Faces:
-                    input#FaceInput.form-control-file(type='file', multiple)
+                    input#FaceInput.form-control-file(type='file', name='image')
             .col-auto
                 button.btn.btn-sm.btn-primary(type='submit') Upload
 
@@ -20,7 +23,6 @@ mixin resident_body(resident)
 
 
 mixin guest_body(guest)
-    br
     h4 Guest: #{guest.info.firstName} #{guest.info.lastName}
     p.hiddenParagraph(id="guestFirstName_"+guest.info.guestId) #{guest.info.firstName}
     p.hiddenParagraph(id="guestLastName_"+guest.info.guestId) #{guest.info.lastName}
@@ -29,16 +31,19 @@ mixin guest_body(guest)
     br
     br
     h5 Faces
-    .img-well
+    .img-well(id="images_" + guest.info.guestId)
         for face in guest.faces
             img.rounded.float-left(alt='unable to show image', src=face.url, data-holder-rendered='true', style='width: 200px; height: 200px;')
 
-    form.uploadImage(style="margin-top:20px")
+    form.uploadImage(id="upload_" + guest.info.guestId, style="margin-top:20px", enctype="multipart/form-data")
+        input(type='text', name='homeId', value=resident.info.homeId ,hidden)
+        input(type='text', name='personId', value=guest.info.guestId ,hidden)
+        input(type='number', name='isGuest', value=1, hidden)
         .form-row.align-items-center
             .col-sm-3
                 .form-group
                     label(for='FaceInput') Add Faces:
-                    input#FaceInput.form-control-file(type='file', multiple)
+                    input#FaceInput.form-control-file(type='file', name='image')
             .col-auto
                 button.btn.btn-sm.btn-primary(type='submit') Upload
 

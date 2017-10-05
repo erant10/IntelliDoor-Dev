@@ -105,17 +105,22 @@ $(document).ready(function(){
 
 	//TODO : Complete the uploadImage flow
 	$(".uploadImage").on('submit',function(e) {
-		e.preventDefault();
+        e.preventDefault();
+
+		var id = $(this).attr('id');
+		var residentId = id.split('_')[1];
+
 		$.ajax({
-			url: "http://localhost:3000/resident/uploadimage", // Url to which the request is send
+			url: "/resident/uploadimage", // Url to which the request is send
 			type: "POST",             // Type of request to be send, called as method
 			data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
 			contentType: false,       // The content type used when sending data to the server.
 			cache: false,             // To unable request pages to be cached
 			processData:false,        // To send DOMDocument or non processed data file it is set to false
-			success: function(response)   // A function to be called if request succeeds
+			success: function(filename)   // A function to be called if request succeeds
 			{
-				console.log(response)
+				$('#images_' + residentId).append("<img data-src=\"holder.js/200x200\" alt=\"200x200\" src=\""+filename+"\" data-holder-rendered=\"true\" style=\"width: 200px; height: 200px;\" class=\"rounded float-left\">")
+
 			}
 		});
 	});

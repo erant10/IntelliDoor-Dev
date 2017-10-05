@@ -2,7 +2,11 @@ const guest = require('../models/guest');
 const face = require('../models/face');
 var resident = require('../models/resident');
 var bcrypt = require('bcrypt');
-
+var formidable = require('formidable'),
+    imgur = require('imgur-node-api'),
+    path = require('path');
+var fs = require('fs');
+imgur.setClientID('e6376674cfd42a7');
 
 module.exports = {
 
@@ -18,7 +22,6 @@ module.exports = {
                     console.log('There was en Error Getting the resident faces:' + error1);
                 }
                 guest.getResidentGuests(req.params.residentId, function(error2, guestList){
-                    console.log(JSON.stringify({info: residentObj, faces: residentFaces, guests: guestList}));
                     res.render('resident/resident', { resident: {info: residentObj[0], faces: residentFaces, guests: guestList} });
                 });
             });
@@ -90,7 +93,33 @@ module.exports = {
     },
 
     uploadImage(req, res, next) {
-        res.send("image uploaded");
+        var form = new formidable.IncomingForm();
+        var fd = {};
+        var url;
+        var binary;
+        var filepath;
+        form.parse(req)
+            .on('fileBegin', function (name, file){
+                file.path = __dirname + '/../public/uploads/' + file.name;
+                filepath = file.path;
+            })
+            .on('field', function (name, field) {
+                fd[name] = field;
+            })
+            .on('end', function () {
+                imgur.upload(filepath, function (err, result) {
+                    face.create(fd.homeId, fd.personId, result.data.link, fd.isGuest, "", function(error, results) {
+                        console.log(JSON.stringify(results));
+
+                        if (!error)
+                            res.send(result.data.link);
+                        else
+                            res.send('an error occured');
+                    });
+
+                });
+            });
+
     }
 
 }
