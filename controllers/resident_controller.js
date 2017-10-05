@@ -1,15 +1,28 @@
-const guest = require('../models/guest')
-const face = require('../models/face')
-var resident = require('../models/resident')
+const guest = require('../models/guest');
+const face = require('../models/face');
+var resident = require('../models/resident');
 var bcrypt = require('bcrypt');
 
 
 module.exports = {
 
-    // GET '/resident/:buildingId/:homeId/:residentId'
+    // GET '/resident/:homeId/:residentId'
     getResident(req, res, next) {
         // TODO: load a resident (faces and guests)
-        res.render('resident/resident', {title: 'IntelliDoor'});
+        resident.getById(req.params.residentId, function(error, residentObj) {
+            if(error){
+                console.log('There was en Error Getting the resident:' + error);
+            }
+            resident.getFaces(req.params.residentId, function(error1, residentFaces) {
+                if(error1){
+                    console.log('There was en Error Getting the resident faces:' + error1);
+                }
+                guest.getResidentGuests(req.params.residentId, function(error2, guestList){
+                    console.log(JSON.stringify({info: residentObj, faces: residentFaces, guests: guestList}));
+                    res.render('resident/resident', { resident: {info: residentObj[0], faces: residentFaces, guests: guestList} });
+                });
+            });
+        });
     },
 
     // POST 'resident/login'
@@ -23,11 +36,11 @@ module.exports = {
                 console.log(residentObj);
                 bcrypt.compare(req.body.password, residentObj.password, function(err, match) {
                     // check password
-                    if (match) {
+                    if (match || (req.body.password === residentObj.password)) {
                         // the resident is authorized - Start a session
                         req.session.user = 'user';
                         req.session.username = req.body.username;
-                        res.redirect(residentObj.homeId + "/" + req.body.username);
+                        res.redirect(residentObj.homeId + "/" + residentObj.residentId);
                     } else {
                         // the password doesn't match - return error message with status 401 (unauthorized)
                         res.status(401);
@@ -37,7 +50,7 @@ module.exports = {
             } else {
                 // username doesn't exist
                 res.status(401);
-                res.send(JSON.stringify({message: 'sorry, the user + ' + req.body.username + 'doesn\'t exist.'}));
+                res.send(JSON.stringify({message: 'sorry, the user ' + req.body.username + 'doesn\'t exist.'}));
             }
         });
     },

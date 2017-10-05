@@ -5,6 +5,7 @@
 var TYPES = require('tedious').TYPES;
 const Person = require('./faceAPI/person');
 const sqlDB = require('../DB/sqlCRUD');
+const parsers = require('../helpers/parsers');
 
 
 module.exports = {
@@ -64,13 +65,33 @@ module.exports = {
     },
 
     // Get Resident by ID
-    getOne(residentId, callback) {
+    getOne(userName, callback) {
         const query =
             "SELECT Res.residentId, Res.firstName, Res.lastName, Res.password, " +
                    "Res.phoneNumber, Res.homeId, Homes.homeId, Homes.buildingId" +
             "\nFROM IntelliDoorDB.dbo.Residents Res" +
             "\nINNER JOIN Homes ON Res.homeId=Homes.homeId" +
-            "\nWHERE userName = 'erant'";
+            "\nWHERE userName = @userName";
+        const idParam = {
+            name: 'userName',
+            type: TYPES.NVarChar,
+            value: userName
+        };
+
+        sqlDB.sqlGet(query, idParam, function(error, result) {
+            if(error) {
+                callback(error, result);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+
+    getById(residentId, callback) {
+        const query = "SELECT *\n" +
+            "  FROM Residents R\n" +
+            "  JOIN Homes H ON H.homeId = R.homeId\n" +
+            "  WHERE R.residentId = @residentId";
         const idParam = {
             name: 'residentId',
             type: TYPES.NVarChar,
@@ -84,5 +105,24 @@ module.exports = {
                 callback(null, result);
             }
         });
-    }
+    },
+
+    getFaces(residentId, callback) {
+        const query = "SELECT *\n" +
+            "  FROM Faces F\n" +
+            "  WHERE F.personId= @residentId";
+        const idParam = {
+            name: 'residentId',
+            type: TYPES.NVarChar,
+            value: residentId
+        };
+
+        sqlDB.sqlGet(query, idParam, function(error, result) {
+            if(error) {
+                callback(error, result);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
 }

@@ -5,7 +5,7 @@
 var TYPES = require('tedious').TYPES;
 const Person = require('./faceAPI/person');
 const sqlDB = require('../DB/sqlCRUD');
-
+const parsers = require('../helpers/parsers')
 
 module.exports = {
 
@@ -57,5 +57,24 @@ module.exports = {
 
         });
 
+    },
+
+    getResidentGuests(residentId, callback) {
+        const query = "SELECT * FROM Faces F\n" +
+            "  FULL OUTER JOIN Guests G ON G.guestId = F.personId\n" +
+            "  WHERE G.guestOf = @residentId";
+        const idParam = {
+            name: 'residentId',
+            type: TYPES.NVarChar,
+            value: residentId
+        };
+        sqlDB.sqlGet(query, idParam, function(error, result) {
+            if(error) {
+                callback(error, result);
+            } else {
+                callback(null, parsers.groupBy(result, 'personId')
+                );
+            }
+        });
     }
 }
