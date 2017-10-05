@@ -40,14 +40,21 @@ mixin home_body(homeId, residents)
                 th remove
         tbody
             for resident in residents
-                tr
-                    td #{resident.firstName} #{resident.lastName}
-                    td #{resident.userName}
-                    td #{resident.email}
-                    td #{resident.phoneNumber}
-                    td #{resident.defaultResident === resident.residentId}
-                    td
-                        a(href="#", style="color:red") delete
+                if(resident.residentId)
+                    tr
+                        td #{resident.firstName} #{resident.lastName}
+                        td #{resident.userName}
+                        td #{resident.email}
+                        td #{resident.phoneNumber}
+                        td #{resident.defaultResident === resident.residentId}
+                        td 
+                            button.deleteResidentButton.btn-link(id='deleteResidentFromApt_'+resident.residentId+'_'+homeId,type='button', style='color:red') delete
+    br
+    br  
+    button.nav-link(class='btn btn-link', data-toggle="modal", data-target="#newResidentModal")
+       i.fa.fa-plus &nbsp;
+        | Add Resident                      
+
 
 mixin newHomeModal()
     // Modal
@@ -70,3 +77,48 @@ mixin newHomeModal()
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Close
                     button#submitNewHomeButton.btn.btn-primary(type='button') Create Home
 
+mixin newResidentModal()
+    // Modal
+    #newResidentModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='residentModalTitle', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#residentModalTitle.modal-title Add A new Resident
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                .modal-body
+                    form#newResidentForm
+                        .form-group.hidden
+                            input#BuildingId.form-control(type='text',value = 'building1' ,hidden)
+                        .form-group
+                            label(for='HomeNumber') Home Number
+                            input#HomeNumber.form-control(type='number', placeholder='Example: 4')
+                        .form-group
+                            label(for='FirstName') First Name
+                            input#FirstName.form-control(type='text', placeholder='Example: Moshe')  
+                        .form-group
+                            label(for='LastName') Last Name
+                            input#LastName.form-control(type='text', placeholder='Example: Moshe')    
+                        .form-group
+                            label(for='user') User Name
+                            input#user.form-control(type='text', placeholder='Example: Moshe123')  
+                        .form-group
+                            label(for='password') Password
+                            input#password.form-control(type='text', placeholder='Example: 12345678') 
+                        .form-group
+                            label(for='phone') Phone Number
+                            input#phone.form-control(type='text', placeholder='Example: 0545678904')
+                        .form-group
+                            label(for='email') Email Adress
+                            input#email.form-control(type='text', placeholder='Example: moshe@gmailcom')
+                        .form-group
+                            label(for='imageUrl') Image Url
+                            input#imageUrl.form-control(type='text', placeholder='Example: http://residentImageUrl.co.il/')
+                        .form-group
+                            label(for='isDefault') Default User
+                            input#isDefault.form-control(type='number', placeholder='Example: 0 or 1')         
+
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                    button.submitNewResidentButton.btn.btn-primary(type='button') Create Resident
+    
