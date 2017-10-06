@@ -69,8 +69,8 @@ $(document).ready(function(){
             data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
             contentType: false,       // The content type used when sending data to the server.
             cache: false,             // To unable request pages to be cached
-            processData:false,        // To send DOMDocument or non processed data file it is set to false
-            success: function(imgUrl)   // A function to be called if request succeeds
+            processData: false,        // To send DOMDocument or non processed data file it is set to false
+            success: function (imgUrl)   // A function to be called if request succeeds
             {
                 var buildingIdObj = form.find('#BuildingId')
                 var homeIdObj = form.find('#HomeId')
@@ -94,7 +94,7 @@ $(document).ready(function(){
                     isDefault = 1;
                 } else {
                     isDefault = 0;
-				}
+                }
 
                 //Get aptNum from HomeID
                 var aptNameArr = homeId.split('-');
@@ -104,16 +104,14 @@ $(document).ready(function(){
                 console.log('buildingId: ' + buildingId);
                 console.log('homeNumber: ' + aptNum);
                 console.log('firstName: ' + firstName);
-                console.log('lastName: ' +lastName);
-                console.log('user: ' +user);
-                console.log('password: ' +password);
-                console.log('email: ' +email);
-                console.log('phone: ' +phone);
-                console.log('imageURL: ' +imgUrl);
-                console.log('isDefault: ' +isDefault);
+                console.log('lastName: ' + lastName);
+                console.log('user: ' + user);
+                console.log('password: ' + password);
+                console.log('email: ' + email);
+                console.log('phone: ' + phone);
+                console.log('imageURL: ' + imgUrl);
+                console.log('isDefault: ' + isDefault);
 
-
-                var table = $('#residentTable_'+homeId).DataTable();
 
                 var settings = {
                     "async": true,
@@ -125,19 +123,20 @@ $(document).ready(function(){
                         "cache-control": "no-cache",
                     },
                     "processData": false,
-                    "data": "{\n\t\"action\":\"addResident\",\n\t\"buildingId\":\""+buildingId+"\",\n\t\"aptNum\":"+aptNum+",\n\t\"firstName\":\""+firstName+"\",\n\t\"lastName\":\""+lastName+"\",\n\t\"user\" : \""+user+"\",\n\t\"password\" : \""+password+"\",\n\t\"email\" : \""+email+"\",\n\t\"phone\" : \""+phone+"\",\n\t\"imageUrl\" : [\""+imgUrl+"\"],\n\t\"isDefault\" :"+isDefault+"\n\t\n}"
+                    "data": "{\n\t\"action\":\"addResident\",\n\t\"buildingId\":\"" + buildingId + "\",\n\t\"aptNum\":" + aptNum + ",\n\t\"firstName\":\"" + firstName + "\",\n\t\"lastName\":\"" + lastName + "\",\n\t\"user\" : \"" + user + "\",\n\t\"password\" : \"" + password + "\",\n\t\"email\" : \"" + email + "\",\n\t\"phone\" : \"" + phone + "\",\n\t\"imageUrl\" : [\"" + imgUrl + "\"],\n\t\"isDefault\" :" + isDefault + "\n\t\n}"
                 }
 
                 $.ajax(settings).done(function (response) {
                     console.log(response);
                     $("#newResidentModal").modal('hide');
-                    table.row.add( [
-                        firstName+' '+lastName,
+                    var table = $('#residentTable_' + homeId).DataTable();
+                    table.row.add([
+                        firstName + ' ' + lastName,
                         user,
                         email,
                         phone,
                         isDefault,
-                        'RefreshForDeleteOption'
+                        '<button id="deleteResidentFromApt_' + user + '_' + homeId + '" class="deleteResidentButton btn-link" style="color:red">delete</button>'
                     ])
                         .rows()
                         .invalidate()
@@ -149,30 +148,40 @@ $(document).ready(function(){
 
 
 	//Deleting Resident
-	$( ".deleteResidentButton" ).on('click',function() {
+	// $( ".deleteResidentButton" ).on('click',function() {
+	$(document.body).on('click','.deleteResidentButton',function() {
 	  	console.log("will delete resident");
-	  	// console.log($(this).closest ('tr'));
-	  	// var buttonsRow = $(this).closest ('tr');
+
+
+	  	//Getting first name and last name
 	  	var row = $(this).closest("tr"),       // Finds the closest row <tr> 
 	    	tds = row.find("td");
 	    var fullnameTd = tds[0];
 		var fullname = $(fullnameTd).text();
+		console.log('fullname:'+fullname);
 	    var fullNameArr = fullname.split(' ');
-
+	    console.log(fullNameArr);
 	    var fn = fullNameArr[0];	
 	    var ln = fullNameArr[1];
 
+	    //Getting Apartment number
+	    console.log('ID:'+this.id);
 	    var buttonIDArr = this.id.split('_');
-	    var aptFullNum = buttonIDArr[2]; //for example "building1-apt15"
+	    console.log('buttonIDArr:'+buttonIDArr);
 
-		console.log(fn +" "+ ln);
-		console.log(aptFullNum);
+	    var button = $(this);
 
-		var aptNameArr = aptFullNum.split('-'); 
+	    var homeId = buttonIDArr[2]; //for example "building1-apt15"
+	    console.log(aptNameArr);
+		var aptNameArr = homeId.split('-');
+		console.log(aptNameArr);
+
 		var aptShortName = aptNameArr[1];//for example "apt15"
 		var aptNum = aptShortName.slice(3);
-		console.log(aptNum);
 
+		console.log(fn +" "+ ln);
+		console.log(homeId);
+		console.log(aptNum);
 
 	  	var settings = {
 		  "async": true,
@@ -191,15 +200,9 @@ $(document).ready(function(){
 		$.ajax(settings).done(function (response) {
 		  console.log(response);
 		  console.log("SUCCESS!");
-		 //  var table = $('.myTable').DataTable();
-		 //  console.log(table
-		 //  	.row( $(this).parents('tr')));
+		  var table = $('#residentTable_'+homeId).DataTable();
+		  table.row(button.closest("tr").get(0)).remove().draw();
 
-		  
-	  //     table
-	  //       .row( $(this).parents('tr') )
-	  //       .remove()
-	  //       .draw();
 		});
 
 	});
