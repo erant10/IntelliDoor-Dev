@@ -29,7 +29,7 @@ mixin admin_body(building, entries)
 
 mixin home_body(homeId, residents)
     h5 Residents of #{homeId}
-    table.myTable.display(cellspacing='0', width='100%')
+    table.myTable.display(cellspacing='0', width='100%', id='residentTable_'+homeId)
         thead
             tr
                 th Name
@@ -51,7 +51,7 @@ mixin home_body(homeId, residents)
                             button.deleteResidentButton.btn-link(id='deleteResidentFromApt_'+resident.residentId+'_'+homeId,type='button', style='color:red') delete
     br
     br  
-    button.nav-link(class='btn btn-link', data-toggle="modal", data-target="#newResidentModal")
+    button.openNewResidentModalButton.nav-link(class='btn btn-link', data-toggle="modal", data-target="#newResidentModal", id = homeId)
        i.fa.fa-plus &nbsp;
         | Add Resident                      
 
@@ -90,9 +90,11 @@ mixin newResidentModal()
                     form#newResidentForm
                         .form-group.hidden
                             input#BuildingId.form-control(type='text',value = 'building1' ,hidden)
+                        //.form-group.hidden
+                        //    label#HomeId.form-control(type='number',value = 'xxx') 
                         .form-group
-                            label(for='HomeNumber') Home Number
-                            input#HomeNumber.form-control(type='number', placeholder='Example: 4')
+                            label(for='HomeId') Apartment ID
+                            input#HomeId.form-control(type='text', value = '', readonly)
                         .form-group
                             label(for='FirstName') First Name
                             input#FirstName.form-control(type='text', placeholder='Example: Moshe')  

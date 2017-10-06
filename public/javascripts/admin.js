@@ -4,6 +4,7 @@ $(document).ready(function(){
 
     $('.myTable').DataTable();
 
+    //Creating new apartment
 	$( "#submitNewHomeButton" ).click(function() {
 	  $( "#newHomeForm" ).submit();
 	});
@@ -44,10 +45,19 @@ $(document).ready(function(){
 
 
 
-	
+	//Creating new Resident
+
+	$( ".openNewResidentModalButton" ).on('click',function() {
+		var homeId = $(this).attr('id');
+		console.log("The HomeID issss : " + homeId);
+		$('#HomeId').val(homeId);
+	});
+
 	$( ".submitNewResidentButton" ).on('click',function() {
 		$( "#newResidentForm" ).submit();
 	});
+
+
 
 	$('#newResidentForm').submit(function(e) {
 		e.preventDefault();
@@ -55,7 +65,7 @@ $(document).ready(function(){
 		console.log("will add resident");
 
 		var buildingIdObj = $(this).find('#BuildingId')
-		var homeNumberObj = $(this).find('#HomeNumber')
+		var homeIdObj = $(this).find('#HomeId')
 		var firstNameObj = $(this).find('#FirstName')
 		var lastNameObj = $(this).find('#LastName')
 		var userObj = $(this).find('#user')
@@ -66,7 +76,7 @@ $(document).ready(function(){
 		var isDefaultObj = $(this).find('#isDefault')
 
 		var buildingId = buildingIdObj.val();
-		var homeNumber = homeNumberObj.val();
+		var homeId = homeIdObj.val(); //for example "building1-apt15"
 		var firstName = firstNameObj.val();
 		var lastName = lastNameObj.val();
 		var user = userObj.val();
@@ -75,9 +85,14 @@ $(document).ready(function(){
 		var phone = phoneObj.val();
 		var imageURL =imageURLObj.val();
 		var isDefault = isDefaultObj.val();
-	
+
+		//Get aptNum from HomeID
+		var aptNameArr = homeId.split('-'); 
+		var aptShortName = aptNameArr[1];//for example "apt15"
+		var aptNum = aptShortName.slice(3);
+
 		console.log(' buildingId: ' + buildingId);
-		console.log('homeNumber: ' + homeNumber);
+		console.log('homeNumber: ' + aptNum);
 		console.log('firstName: ' + firstName);
 		console.log('lastName: ' +lastName);
 		console.log('user: ' +user);
@@ -85,6 +100,12 @@ $(document).ready(function(){
 		console.log('email: ' +email);
 		console.log('phone: ' +phone);
 		console.log('imageURL: ' +imageURL);
+
+
+	    var table = $('#residentTable_'+homeId).DataTable();
+
+
+
 
 		var settings = {
 		  "async": true,
@@ -96,23 +117,28 @@ $(document).ready(function(){
 		    "cache-control": "no-cache",
 		  },
 		  "processData": false,
-		  "data": "{\n\t\"action\":\"addResident\",\n\t\"buildingId\":\""+buildingId+"\",\n\t\"aptNum\":"+homeNumber+",\n\t\"firstName\":\""+firstName+"\",\n\t\"lastName\":\""+lastName+"\",\n\t\"user\" : \""+user+"\",\n\t\"password\" : \""+password+"\",\n\t\"email\" : \""+email+"\",\n\t\"phone\" : \""+phone+"\",\n\t\"imageUrl\" : [\""+imageURL+"\"],\n\t\"isDefault\" :"+isDefault+"\n\t\n}"
+		  "data": "{\n\t\"action\":\"addResident\",\n\t\"buildingId\":\""+buildingId+"\",\n\t\"aptNum\":"+aptNum+",\n\t\"firstName\":\""+firstName+"\",\n\t\"lastName\":\""+lastName+"\",\n\t\"user\" : \""+user+"\",\n\t\"password\" : \""+password+"\",\n\t\"email\" : \""+email+"\",\n\t\"phone\" : \""+phone+"\",\n\t\"imageUrl\" : [\""+imageURL+"\"],\n\t\"isDefault\" :"+isDefault+"\n\t\n}"
 		}
 
 		$.ajax(settings).done(function (response) {
 		  console.log(response);
 		  $("#newResidentModal").modal('hide');
-		  $('.myTable').each(function() {
-		  	//TODO - find the way to refresh !
-    		dt = $(this).dataTable();
-    		dt.fnDraw();
-		  });	
-		});
-
-
+	      table.row.add( [ 
+		        firstName+' '+lastName,
+		        user,
+		        email,
+		        phone,
+		        isDefault,
+		        'RefreshForDeleteOption'
+	   	  ])
+	   	  .rows()
+	   	  .invalidate()
+	      .draw();
+	    });
 	});
 
 
+	//Deleting Resident
 	$( ".deleteResidentButton" ).on('click',function() {
 	  	console.log("will delete resident");
 	  	// console.log($(this).closest ('tr'));
@@ -126,8 +152,6 @@ $(document).ready(function(){
 	    var fn = fullNameArr[0];	
 	    var ln = fullNameArr[1];
 
-
-
 	    var buttonIDArr = this.id.split('_');
 	    var aptFullNum = buttonIDArr[2]; //for example "building1-apt15"
 
@@ -138,6 +162,7 @@ $(document).ready(function(){
 		var aptShortName = aptNameArr[1];//for example "apt15"
 		var aptNum = aptShortName.slice(3);
 		console.log(aptNum);
+
 
 	  	var settings = {
 		  "async": true,
@@ -156,6 +181,15 @@ $(document).ready(function(){
 		$.ajax(settings).done(function (response) {
 		  console.log(response);
 		  console.log("SUCCESS!");
+		 //  var table = $('.myTable').DataTable();
+		 //  console.log(table
+		 //  	.row( $(this).parents('tr')));
+
+		  
+	  //     table
+	  //       .row( $(this).parents('tr') )
+	  //       .remove()
+	  //       .draw();
 		});
 
 	});
