@@ -10,6 +10,7 @@ $(document).ready(function(){
 	});
 
 	$('#newHomeForm').submit(function(e) {
+		$(this).append('Please Wait while the home is being created...')
 		e.preventDefault();
 		console.log('New home form was submitted');
 
@@ -38,7 +39,8 @@ $(document).ready(function(){
 		$.ajax(settings).done(function (response) {
 		  console.log(response);
 		  console.log("SUCCESS!");
-		  $("#newHomeModal").modal('hide');
+		  location.reload();
+
 		});
 
 	});
@@ -128,6 +130,7 @@ $(document).ready(function(){
 
                 $.ajax(settings).done(function (response) {
                     console.log(response);
+                    $('.uploadButton').attr('disabled',true);
                     $("#newResidentModal").modal('hide');
                     var table = $('#residentTable_' + homeId).DataTable();
                     table.row.add([
@@ -141,6 +144,9 @@ $(document).ready(function(){
                         .rows()
                         .invalidate()
                         .draw();
+
+                    $('#newResidentForm')[0].reset();
+
                 });
             }
         });
@@ -206,6 +212,17 @@ $(document).ready(function(){
 		});
 
 	});
+
+	$('input:file').change(
+        function(){
+            if ($(this).val()) {
+                $('.uploadButton').attr('disabled',false);
+                // or, as has been pointed out elsewhere:
+                // $('input:submit').removeAttr('disabled'); 
+            } 
+        }
+    );
+
 
 
 });

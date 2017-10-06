@@ -14,7 +14,9 @@ $(document).ready(function(){
 
     $( ".deleteGuest" ).click(function() {
       console.log('deleting guest');	
-	  
+	  $(this).html('Please wait while deleting your guest...');
+	  $(this).css('color', 'blue');
+	  $(this).attr('disabled','');
 	  var elem_id = $(this).attr('id');
 	  var fn_id = "#guestFirstName_"+ elem_id;
 	  var firstName = $(fn_id).html()
@@ -47,12 +49,14 @@ $(document).ready(function(){
 
 		$.ajax(settings).done(function (response) {
 		  console.log(response);
+		  location.reload();
 		});
 	});
 
 
 	$('#newGuestForm').submit(function(e) {
 		e.preventDefault();
+		$(this).append('Please Wait while the guest is being created...');
 		console.log('New Guest form was submitted');
 		var form = $(this);
         $.ajax({
@@ -102,7 +106,8 @@ $(document).ready(function(){
 
                 $.ajax(settings).done(function (response) {
                     console.log(response);
-                    $("#newGuestModal").modal('hide');
+                    location.reload();
+
                 });
 
 
@@ -129,10 +134,19 @@ $(document).ready(function(){
 			success: function(filename)   // A function to be called if request succeeds
 			{
 				$('#images_' + residentId).append("<img data-src=\"holder.js/200x200\" alt=\"200x200\" src=\""+filename+"\" data-holder-rendered=\"true\" style=\"width: 200px; height: 200px;\" class=\"rounded float-left\">")
-
+				$('.uploadButton').attr('disabled',true);
 			}
 		});
 	});
 
+	$('input:file').change(
+        function(){
+            if ($(this).val()) {
+                $('.uploadButton').attr('disabled',false);
+                // or, as has been pointed out elsewhere:
+                // $('input:submit').removeAttr('disabled'); 
+            } 
+        }
+    );
 
 });

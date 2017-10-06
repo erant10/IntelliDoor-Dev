@@ -15,7 +15,7 @@ mixin resident_body(resident)
                     label(for='FaceInput') Add Faces:
                     input#FaceInput.form-control-file(type='file', name='image')
             .col-auto
-                button.btn.btn-sm.btn-primary(type='submit') Upload
+                button.uploadButton.btn.btn-sm.btn-primary(type='submit', disabled='') Upload
 
     br
     br
@@ -45,7 +45,7 @@ mixin guest_body(guest)
                     label(for='FaceInput') Add Faces:
                     input#FaceInput.form-control-file(type='file', name='image')
             .col-auto
-                button.btn.btn-sm.btn-primary(type='submit') Upload
+                button.uploadButton.btn.btn-sm.btn-primary(type='submit',disabled='') Upload
 
 
 mixin guestModal(resident)
@@ -81,5 +81,5 @@ mixin guestModal(resident)
 
                 .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Close
-                    button#submitNewGuestButton.btn.btn-primary(type='button') Create Guest
+                    button#submitNewGuestButton.uploadButton.btn.btn-primary(type='button', disabled='') Create Guest
 
