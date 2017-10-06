@@ -130,6 +130,27 @@ $(document).ready(function(){
 
                 $.ajax(settings).done(function (response) {
                     console.log(response);
+
+                    //Update DB of new default user if needed
+                    if(isDefault === 1) {
+	                    var settings2 = {
+		                    "async": true,
+		                    "crossDomain": true,
+		                    "url": "/updateDefResident",
+		                    "method": "POST",
+		                    "headers": {
+		                        "content-type": "application/json",
+		                        "cache-control": "no-cache",
+		                    },
+		                    "processData": false,
+		                    "data": "{\n\t\"buildingId\":\"" + buildingId + "\",\n\t\"aptNum\":" + aptNum + ",\n\t\"user\" : \"" + user + "\n\t\n}"
+		                }
+
+	                    $.ajax(settings2).done(function (response) {
+	                    	console.log("update DB of a new Default resident")
+	                    });
+                    }
+
                     $('.uploadButton').attr('disabled',true);
                     $("#newResidentModal").modal('hide');
                     var table = $('#residentTable_' + homeId).DataTable();
@@ -138,7 +159,7 @@ $(document).ready(function(){
                         user,
                         email,
                         phone,
-                        isDefault,
+                        (isDefault === 1),
                         '<button id="deleteResidentFromApt_' + user + '_' + homeId + '" class="deleteResidentButton btn-link" style="color:red">delete</button>'
                     ])
                         .rows()
