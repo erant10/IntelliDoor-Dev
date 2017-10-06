@@ -60,81 +60,91 @@ $(document).ready(function(){
 
 
 	$('#newResidentForm').submit(function(e) {
-		e.preventDefault();
+        e.preventDefault();
+        console.log('will add resident');
+        var form = $(this);
+        $.ajax({
+            url: "/uploadNewImage", // Url to which the request is send
+            type: "POST",             // Type of request to be send, called as method
+            data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+            contentType: false,       // The content type used when sending data to the server.
+            cache: false,             // To unable request pages to be cached
+            processData:false,        // To send DOMDocument or non processed data file it is set to false
+            success: function(imgUrl)   // A function to be called if request succeeds
+            {
+                var buildingIdObj = form.find('#BuildingId')
+                var homeIdObj = form.find('#HomeId')
+                var firstNameObj = form.find('#FirstName')
+                var lastNameObj = form.find('#LastName')
+                var userObj = form.find('#user')
+                var passwordObj = form.find('#password')
+                var emailObj = form.find('#email')
+                var phoneObj = form.find('#phone')
 
-		console.log("will add resident");
+                var buildingId = buildingIdObj.val();
+                var homeId = homeIdObj.val(); //for example "building1-apt15"
+                var firstName = firstNameObj.val();
+                var lastName = lastNameObj.val();
+                var user = userObj.val();
+                var password = passwordObj.val();
+                var email = emailObj.val();
+                var phone = phoneObj.val();
+                var isDefault;
+                if ($('input#isDefault').is(':checked')) {
+                    isDefault = 1;
+                } else {
+                    isDefault = 0;
+				}
 
-		var buildingIdObj = $(this).find('#BuildingId')
-		var homeIdObj = $(this).find('#HomeId')
-		var firstNameObj = $(this).find('#FirstName')
-		var lastNameObj = $(this).find('#LastName')
-		var userObj = $(this).find('#user')
-		var passwordObj = $(this).find('#password')
-		var emailObj = $(this).find('#email')
-		var phoneObj = $(this).find('#phone')
-		var imageURLObj = $(this).find('#imageUrl')
-		var isDefaultObj = $(this).find('#isDefault')
+                //Get aptNum from HomeID
+                var aptNameArr = homeId.split('-');
+                var aptShortName = aptNameArr[1];//for example "apt15"
+                var aptNum = aptShortName.slice(3);
 
-		var buildingId = buildingIdObj.val();
-		var homeId = homeIdObj.val(); //for example "building1-apt15"
-		var firstName = firstNameObj.val();
-		var lastName = lastNameObj.val();
-		var user = userObj.val();
-		var password = passwordObj.val();
-		var email = emailObj.val();
-		var phone = phoneObj.val();
-		var imageURL =imageURLObj.val();
-		var isDefault = isDefaultObj.val();
-
-		//Get aptNum from HomeID
-		var aptNameArr = homeId.split('-'); 
-		var aptShortName = aptNameArr[1];//for example "apt15"
-		var aptNum = aptShortName.slice(3);
-
-		console.log(' buildingId: ' + buildingId);
-		console.log('homeNumber: ' + aptNum);
-		console.log('firstName: ' + firstName);
-		console.log('lastName: ' +lastName);
-		console.log('user: ' +user);
-		console.log('password: ' +password);
-		console.log('email: ' +email);
-		console.log('phone: ' +phone);
-		console.log('imageURL: ' +imageURL);
+                console.log('buildingId: ' + buildingId);
+                console.log('homeNumber: ' + aptNum);
+                console.log('firstName: ' + firstName);
+                console.log('lastName: ' +lastName);
+                console.log('user: ' +user);
+                console.log('password: ' +password);
+                console.log('email: ' +email);
+                console.log('phone: ' +phone);
+                console.log('imageURL: ' +imgUrl);
+                console.log('isDefault: ' +isDefault);
 
 
-	    var table = $('#residentTable_'+homeId).DataTable();
+                var table = $('#residentTable_'+homeId).DataTable();
 
+                var settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "https://prod-27.westeurope.logic.azure.com:443/workflows/1119d87624504ba2adcfb8e12c7cf22d/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8WkPtYBCtr6lEq3sbg1JLsgCZshAZK_bCGtaqaiQXTo",
+                    "method": "POST",
+                    "headers": {
+                        "content-type": "application/json",
+                        "cache-control": "no-cache",
+                    },
+                    "processData": false,
+                    "data": "{\n\t\"action\":\"addResident\",\n\t\"buildingId\":\""+buildingId+"\",\n\t\"aptNum\":"+aptNum+",\n\t\"firstName\":\""+firstName+"\",\n\t\"lastName\":\""+lastName+"\",\n\t\"user\" : \""+user+"\",\n\t\"password\" : \""+password+"\",\n\t\"email\" : \""+email+"\",\n\t\"phone\" : \""+phone+"\",\n\t\"imageUrl\" : [\""+imgUrl+"\"],\n\t\"isDefault\" :"+isDefault+"\n\t\n}"
+                }
 
-
-
-		var settings = {
-		  "async": true,
-		  "crossDomain": true,
-		  "url": "https://prod-27.westeurope.logic.azure.com:443/workflows/1119d87624504ba2adcfb8e12c7cf22d/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8WkPtYBCtr6lEq3sbg1JLsgCZshAZK_bCGtaqaiQXTo",
-		  "method": "POST",
-		  "headers": {
-		    "content-type": "application/json",
-		    "cache-control": "no-cache",
-		  },
-		  "processData": false,
-		  "data": "{\n\t\"action\":\"addResident\",\n\t\"buildingId\":\""+buildingId+"\",\n\t\"aptNum\":"+aptNum+",\n\t\"firstName\":\""+firstName+"\",\n\t\"lastName\":\""+lastName+"\",\n\t\"user\" : \""+user+"\",\n\t\"password\" : \""+password+"\",\n\t\"email\" : \""+email+"\",\n\t\"phone\" : \""+phone+"\",\n\t\"imageUrl\" : [\""+imageURL+"\"],\n\t\"isDefault\" :"+isDefault+"\n\t\n}"
-		}
-
-		$.ajax(settings).done(function (response) {
-		  console.log(response);
-		  $("#newResidentModal").modal('hide');
-	      table.row.add( [ 
-		        firstName+' '+lastName,
-		        user,
-		        email,
-		        phone,
-		        isDefault,
-		        'RefreshForDeleteOption'
-	   	  ])
-	   	  .rows()
-	   	  .invalidate()
-	      .draw();
-	    });
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    $("#newResidentModal").modal('hide');
+                    table.row.add( [
+                        firstName+' '+lastName,
+                        user,
+                        email,
+                        phone,
+                        isDefault,
+                        'RefreshForDeleteOption'
+                    ])
+                        .rows()
+                        .invalidate()
+                        .draw();
+                });
+            }
+        });
 	});
 
 

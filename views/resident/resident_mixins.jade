@@ -58,7 +58,7 @@ mixin guestModal(resident)
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
                         span(aria-hidden='true') ×
                 .modal-body
-                    form#newGuestForm
+                    form#newGuestForm(enctype="multipart/form-data")
 
                         .form-group.hidden
                             input#residentFirstName.form-control(type='text',value = '#{resident.firstName}' ,hidden)
@@ -68,8 +68,6 @@ mixin guestModal(resident)
                             input#buildingId.form-control(type='text',value = '#{resident.buildingId}' ,hidden)
                         .form-group.hidden
                             input#aptNumber.form-control(type='number',value = '#{resident.aptNumber}' ,hidden)
-                        .form-group.hidden
-                            input#guestImageURL.form-control(type='text',value = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqR0BxYi1Xum7pw5pONHkiKcbD0ZWvemjArDqf3vkQI2U7z400wg' ,hidden)
 
                         .form-group
                             label(for='guestFirstName') First Name
@@ -77,6 +75,9 @@ mixin guestModal(resident)
                         .form-group
                             label(for='guestLastName') Last Name
                             input#guestLastName.form-control(type='text', placeholder='Example: Snow')
+                        .form-group
+                            label(for='FaceInput') Face:
+                            input#FaceInput.form-control-file(type='file', name='newImage')
 
                 .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Close

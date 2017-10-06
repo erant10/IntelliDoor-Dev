@@ -10,7 +10,6 @@ module.exports = {
     // GET '\admin\:buildingId' - building page
     loadBuilding(req, res, next) {
         // from the building page the admin can add, update or remove a home
-        console.log("session: " + JSON.stringify(req.session));
         if (req.session.user === 'admin') {
             // the admin is logged in
             building.getOne(req.params.buildingId, function(error, buildingObj){

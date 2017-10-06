@@ -95,8 +95,6 @@ module.exports = {
     uploadImage(req, res, next) {
         var form = new formidable.IncomingForm();
         var fd = {};
-        var url;
-        var binary;
         var filepath;
         form.parse(req)
             .on('fileBegin', function (name, file){

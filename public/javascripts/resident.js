@@ -54,51 +54,60 @@ $(document).ready(function(){
 	$('#newGuestForm').submit(function(e) {
 		e.preventDefault();
 		console.log('New Guest form was submitted');
+		var form = $(this);
+        $.ajax({
+            url: "/uploadNewImage", // Url to which the request is send
+            type: "POST",             // Type of request to be send, called as method
+            data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+            contentType: false,       // The content type used when sending data to the server.
+            cache: false,             // To unable request pages to be cached
+            processData:false,        // To send DOMDocument or non processed data file it is set to false
+            success: function(imgUrl)   // A function to be called if request succeeds
+            {
+                var guestFirstNameObj = form.find('#guestFirstName')
+                var guestLastNameObj = form.find('#guestLastName')
+                var residentFirstNameObj = form.find('#residentFirstName')
+                var residentLastNameObj = form.find('#residentLastName')
+                var buildingIdObj = form.find('#buildingId')
+                var homeNumberObj = form.find('#aptNumber')
 
-		var guestFirstNameObj = $(this).find('#guestFirstName')
-		var guestLastNameObj = $(this).find('#guestLastName')
-		var residentFirstNameObj = $(this).find('#residentFirstName')
-		var residentLastNameObj = $(this).find('#residentLastName')
-		var buildingIdObj = $(this).find('#buildingId')
-		var homeNumberObj = $(this).find('#aptNumber')
-		var imageURLObj = $(this).find('#guestImageURL')
+                var guestFirstName = guestFirstNameObj.val();
+                var guestLastName = guestLastNameObj.val();
+                var residentFirstName = residentFirstNameObj.val();
+                var residentLastName = residentLastNameObj.val();
+                var buildingId =buildingIdObj.val();
+                var homeNumber =homeNumberObj.val();
 
-		var guestFirstName = guestFirstNameObj.val();
-		var guestLastName = guestLastNameObj.val();
-		var residentFirstName = residentFirstNameObj.val();
-		var residentLastName = residentLastNameObj.val();
-		var buildingId =buildingIdObj.val();
-		var homeNumber =homeNumberObj.val();
-		var imageURL =imageURLObj.val();
-		var imageURLArr = [imageURL];
+                console.log('Gust name: ' + guestFirstName);
+                console.log('Gust last name: ' + guestLastName);
+                console.log('resident name: ' + residentFirstName);
+                console.log('resident last name: ' +residentLastName);
+                console.log('buildingId is: ' +buildingId);
+                console.log('home number is: ' +homeNumber);
+                console.log('image url is: ' +imgUrl);
 
-		console.log('Gust name: ' + guestFirstName);
-		console.log('Gust last name: ' + guestLastName);
-		console.log('resident name: ' + residentFirstName);
-		console.log('resident last name: ' +residentLastName);
-		console.log('buildingId is: ' +buildingId);
-		console.log('home number is: ' +homeNumber);
-		console.log('IMG URL is: ' +imageURL);
+                var settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "https://prod-27.westeurope.logic.azure.com:443/workflows/1119d87624504ba2adcfb8e12c7cf22d/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8WkPtYBCtr6lEq3sbg1JLsgCZshAZK_bCGtaqaiQXTo",
+                    "method": "POST",
+                    "headers": {
+                        "content-type": "application/json",
+                        "cache-control": "no-cache"
+                    },
+                    "processData": false,
+                    "data": "{\n\t\"action\":\"addGuest\",\n\t\"buildingId\":\""+buildingId+"\",\n\t\"aptNum\":"+homeNumber+",\n\t\"firstName\":\""+guestFirstName+"\",\n\t\"lastName\":\""+guestLastName+"\",\n\t\"firstNameOfRes\":\""+residentFirstName+"\",\n\t\"lastNameOfRes\":\""+residentLastName+"\",\n\t\"imageUrl\":[\""+imgUrl+"\"]\n}"
 
-		var settings = {
-		  "async": true,
-		  "crossDomain": true,
-		  "url": "https://prod-27.westeurope.logic.azure.com:443/workflows/1119d87624504ba2adcfb8e12c7cf22d/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8WkPtYBCtr6lEq3sbg1JLsgCZshAZK_bCGtaqaiQXTo",
-		  "method": "POST",
-		  "headers": {
-		    "content-type": "application/json",
-		    "cache-control": "no-cache"
-		  },
-		  "processData": false,
-		  "data": "{\n\t\"action\":\"addGuest\",\n\t\"buildingId\":\""+buildingId+"\",\n\t\"aptNum\":"+homeNumber+",\n\t\"firstName\":\""+guestFirstName+"\",\n\t\"lastName\":\""+guestLastName+"\",\n\t\"firstNameOfRes\":\""+residentFirstName+"\",\n\t\"lastNameOfRes\":\""+residentLastName+"\",\n\t\"imageUrl\":[\""+imageURL+"\"]\n}"
-		  
-		}
+                }
 
-		$.ajax(settings).done(function (response) {
-		  console.log(response);
-		  $("#newGuestModal").modal('hide');
-		});
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    $("#newGuestModal").modal('hide');
+                });
 
+
+            }
+        });
 	});
 
 
