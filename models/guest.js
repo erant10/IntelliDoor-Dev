@@ -48,7 +48,6 @@ module.exports = {
                 sqlDB.SqlInsert(query, params, function(error, results) {
                     if(error) {
                         callback(error, {status: 400, response: results});
-                        // TODO: remove the person from the faceAPI
                     } else {
                         callback(null, {status: 200, response: results});
                     }

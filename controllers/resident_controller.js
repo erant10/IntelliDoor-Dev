@@ -12,7 +12,6 @@ module.exports = {
 
     // GET '/resident/:homeId/:residentId'
     getResident(req, res, next) {
-        // TODO: load a resident (faces and guests)
         resident.getById(req.params.residentId, function(error, residentObj) {
             if(error){
                 console.log('There was en Error Getting the resident:' + error);
@@ -60,7 +59,6 @@ module.exports = {
 
     /* PUT /:buildingId/:homeId/:residentId/newGuest - create a new guest. */
     createGuest(req, res, next) {
-        // TODO: verify resident session and get cookie values
         var guestObj = req.body;
         guest.create(guestObj, function(error, result) {
             if(error || result.status !== 200) {
@@ -76,7 +74,6 @@ module.exports = {
 
     /* POST /:buildingId/:homeId/:residentId/newFace - create a new face. */
     createFace(req, res, next) {
-        // TODO: verify resident session and get cookie values
         var faceObj = req.body;
         face.create(faceObj.homeId, faceObj.personId, faceObj.url, faceObj.isGuest, faceObj.description,
             function(error, result) {

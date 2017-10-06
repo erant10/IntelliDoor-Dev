@@ -56,7 +56,6 @@ module.exports = {
      * @param callback
      */
     getOne(buildingId, callback) {
-        // TODO: change query to return alll relevant data
         const query = "SELECT * FROM IntelliDoorDB.dbo.Buildings WHERE buildingId = @buildingId;";
         const idParam = {
             name: 'buildingId',

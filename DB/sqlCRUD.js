@@ -80,5 +80,43 @@ module.exports = {
             connection.execSql(request);
         });
 
-    }
+    },
+    /**
+     *
+     * @param query
+     * @param idParam
+     * @param callback
+     */
+    sqlUpdate(query, params, callback){
+        var results = [];
+        const DBconfig = config.get('db');
+        var connection = new Connection(DBconfig);
+
+        connection.on('connect', function (err) {
+            // If no error, then good to proceed.
+            request = new Request(query, function (err) {
+                if (err) {
+                    return callback(err);
+                }
+                // parse the results to readable format
+                jsonArray = parsers.parseSqlOutput(results);
+
+                // call the callback function
+                callback(null, jsonArray);
+
+            });
+            params.forEach(function(param){
+                request.addParameter(param.name, param.type, param.value);
+            });
+
+            // perform selection
+            request.on('row', function (columns) {
+                results.push(columns);
+            });
+
+            connection.execSql(request);
+        });
+
+    },
+
 }

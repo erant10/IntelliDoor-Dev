@@ -2,14 +2,13 @@ var express = require('express');
 var router = express.Router();
 var formidable = require('formidable'),
     imgur = require('imgur-node-api');
+var home = require('../models/home')
 
 /* GET landing page. */
 router.get('/', function(req, res, next) {
-  // TODO: if a session is already active - redirect to user page (admin or resident), otherwise redirect to landing page
   if (req.session.user === 'admin') {
       res.redirect('/admin/'+req.session.building)
   } else if (req.session.user === 'resident') {
-      // TODO: redirect to resident page
       res.redirect('/resident/')
   } else {
       res.render('landing/index', {title: 'IntelliDoor'});
@@ -45,5 +44,21 @@ router.post('/uploadNewImage', function(req, res, next) {
 
 });
 
+
+/* POST /update page. */
+router.post('/update', function(req, res, next) {
+    console.log(req.body);
+    console.log(req.body.buildingId);
+    console.log(req.body.aptNum);
+    console.log(req.body.user);
+    home.update(req.body.buildingId, req.body.aptNum, req.body.user, function(error, result) {
+        if (error)
+            res.send('something went wrong when updating the default resident: ' + error);
+        else
+            console.log(result);
+            res.send(result)
+
+    });
+});
 
 module.exports = router;

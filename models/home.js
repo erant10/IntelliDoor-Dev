@@ -16,8 +16,6 @@ module.exports = {
      * @param {function} callback - The callback that handles the response.
      */
     create(homeObject, callback) {
-        // TODO: check that homeObject.homeId and homeObject.apartment are not already taken
-        // TODO: check that homeObject.buildingId exists
         // create a person group in the face API
         PersonGroup.create(homeObject, function(error, results) {
             if(error || results.status !== 200) {
@@ -53,7 +51,6 @@ module.exports = {
 
                 sqlDB.SqlInsert(query, params, function(error, results) {
                     if(error) {
-                        // TODO: remove the home from the face API
                         callback(error, {status: 400, response: results});
                     } else {
                         callback(null, {status: 200, response: results});
@@ -64,13 +61,31 @@ module.exports = {
         });
     },
 
-    // Get Home by ID
-    getOne(homeId, callback) {
-        // TODO: implement selecting an home
-    },
+    // Update default resident
+    update(buildingId, homeNum, username, callback) {
+        const query = "UPDATE Homes \n" +
+            "  SET defaultResident = (SELECT residentId FROM Residents WHERE username = @username) \n" +
+            "  WHERE homeId = @homeId";
+        const params = [
+            {
+                name: 'username',
+                type: TYPES.NVarChar,
+                value: username
+            },
+            {
+                name: 'homeId',
+                type: TYPES.NVarChar,
+                value: buildingId+"-apt"+homeNum
+            }
 
-    // Get Home by ID
-    remove(homeId, callback) {
-        // TODO: implement removing an home
+        ];
+
+        sqlDB.sqlUpdate(query, params, function(error, result) {
+            if(error) {
+                callback(error, result);
+            } else {
+                callback(null, result);
+            }
+        });
     }
 }

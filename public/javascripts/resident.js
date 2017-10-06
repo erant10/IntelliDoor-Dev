@@ -7,13 +7,11 @@ $(document).ready(function(){
     $('.hiddenParagraph').hide();
 
     $( "#submitNewGuestButton" ).click(function() {
-      console.log('submitting');	
 	  $( "#newGuestForm" ).submit();
 	});
 
 
     $( ".deleteGuest" ).click(function() {
-      console.log('deleting guest');	
 	  $(this).html('Please wait while deleting your guest...');
 	  $(this).css('color', 'blue');
 	  $(this).attr('disabled','');
@@ -23,16 +21,10 @@ $(document).ready(function(){
 	  var ln_id = "#guestLastName_"+ elem_id;
 	  var lastName = $(ln_id).html()
 
-	  console.log('firstname is: ' +firstName);
-	  console.log('lastName is: ' +lastName);
-
 	  var buildingIdObj = $('#newGuestForm').find('#buildingId')
 	  var homeNumberObj = $('#newGuestForm').find('#aptNumber')
 	  var buildingId =buildingIdObj.val();
 	  var homeNumber =homeNumberObj.val();
-
-	  console.log('buildingId is: ' +buildingId);
-	  console.log('home number is: ' +homeNumber);
 
 	  var settings = {
 		  "async": true,
@@ -48,7 +40,6 @@ $(document).ready(function(){
 		}
 
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
 		  location.reload();
 		});
 	});
@@ -57,7 +48,6 @@ $(document).ready(function(){
 	$('#newGuestForm').submit(function(e) {
 		e.preventDefault();
 		$(this).append('Please Wait while the guest is being created...');
-		console.log('New Guest form was submitted');
 		var form = $(this);
         $.ajax({
             url: "/uploadNewImage", // Url to which the request is send
@@ -82,14 +72,6 @@ $(document).ready(function(){
                 var buildingId =buildingIdObj.val();
                 var homeNumber =homeNumberObj.val();
 
-                console.log('Gust name: ' + guestFirstName);
-                console.log('Gust last name: ' + guestLastName);
-                console.log('resident name: ' + residentFirstName);
-                console.log('resident last name: ' +residentLastName);
-                console.log('buildingId is: ' +buildingId);
-                console.log('home number is: ' +homeNumber);
-                console.log('image url is: ' +imgUrl);
-
                 var settings = {
                     "async": true,
                     "crossDomain": true,
@@ -105,7 +87,6 @@ $(document).ready(function(){
                 }
 
                 $.ajax(settings).done(function (response) {
-                    console.log(response);
                     location.reload();
 
                 });
@@ -117,7 +98,6 @@ $(document).ready(function(){
 
 
 
-	//TODO : Complete the uploadImage flow
 	$(".uploadImage").on('submit',function(e) {
         e.preventDefault();
 

@@ -12,16 +12,11 @@ $(document).ready(function(){
 	$('#newHomeForm').submit(function(e) {
 		$(this).append('Please Wait while the home is being created...')
 		e.preventDefault();
-		console.log('New home form was submitted');
-
 		var homeNumberObj = $(this).find('#HomeNumber')
 		var buildingIdObj = $(this).find('#BuildingId')
 
 		var homeNumber = homeNumberObj.val();
 		var buildingId = buildingIdObj.val();
-
-		console.log(homeNumber);
-		console.log(buildingId);
 
 		var settings = {
 		  "async": true,
@@ -37,8 +32,6 @@ $(document).ready(function(){
 		}
 
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
-		  console.log("SUCCESS!");
 		  location.reload();
 
 		});
@@ -51,7 +44,6 @@ $(document).ready(function(){
 
 	$( ".openNewResidentModalButton" ).on('click',function() {
 		var homeId = $(this).attr('id');
-		console.log("The HomeID issss : " + homeId);
 		$('#HomeId').val(homeId);
 	});
 
@@ -63,7 +55,6 @@ $(document).ready(function(){
 
 	$('#newResidentForm').submit(function(e) {
         e.preventDefault();
-        console.log('will add resident');
         var form = $(this);
         $.ajax({
             url: "/uploadNewImage", // Url to which the request is send
@@ -103,18 +94,6 @@ $(document).ready(function(){
                 var aptShortName = aptNameArr[1];//for example "apt15"
                 var aptNum = aptShortName.slice(3);
 
-                console.log('buildingId: ' + buildingId);
-                console.log('homeNumber: ' + aptNum);
-                console.log('firstName: ' + firstName);
-                console.log('lastName: ' + lastName);
-                console.log('user: ' + user);
-                console.log('password: ' + password);
-                console.log('email: ' + email);
-                console.log('phone: ' + phone);
-                console.log('imageURL: ' + imgUrl);
-                console.log('isDefault: ' + isDefault);
-
-
                 var settings = {
                     "async": true,
                     "crossDomain": true,
@@ -129,25 +108,25 @@ $(document).ready(function(){
                 }
 
                 $.ajax(settings).done(function (response) {
-                    console.log(response);
 
                     //Update DB of new default user if needed
                     if(isDefault === 1) {
-	                    var settings2 = {
-		                    "async": true,
-		                    "crossDomain": true,
-		                    "url": "/updateDefResident",
-		                    "method": "POST",
-		                    "headers": {
-		                        "content-type": "application/json",
-		                        "cache-control": "no-cache",
-		                    },
-		                    "processData": false,
-		                    "data": "{\n\t\"buildingId\":\"" + buildingId + "\",\n\t\"aptNum\":" + aptNum + ",\n\t\"user\" : \"" + user + "\n\t\n}"
-		                }
+
+                        var settings2 = {
+                            "async": true,
+                            "crossDomain": true,
+                            "url": "/update",
+                            "method": "POST",
+                            "headers": {
+                                "content-type": "application/json",
+                                "cache-control": "no-cache"
+                            },
+                            "processData": false,
+                            "data": "{\n\t\"buildingId\": \""+buildingId+"\",\n\t\"aptNum\": "+aptNum+",\n\t\"user\": \""+user+"\"\n}"
+                        };
 
 	                    $.ajax(settings2).done(function (response) {
-	                    	console.log("update DB of a new Default resident")
+	                    	console.log("update DB of a new Default resident. result: " + response)
 	                    });
                     }
 
@@ -177,38 +156,25 @@ $(document).ready(function(){
 	//Deleting Resident
 	// $( ".deleteResidentButton" ).on('click',function() {
 	$(document.body).on('click','.deleteResidentButton',function() {
-	  	console.log("will delete resident");
-
-
 	  	//Getting first name and last name
 	  	var row = $(this).closest("tr"),       // Finds the closest row <tr> 
 	    	tds = row.find("td");
 	    var fullnameTd = tds[0];
 		var fullname = $(fullnameTd).text();
-		console.log('fullname:'+fullname);
 	    var fullNameArr = fullname.split(' ');
-	    console.log(fullNameArr);
-	    var fn = fullNameArr[0];	
+	    var fn = fullNameArr[0];
 	    var ln = fullNameArr[1];
 
 	    //Getting Apartment number
-	    console.log('ID:'+this.id);
 	    var buttonIDArr = this.id.split('_');
-	    console.log('buttonIDArr:'+buttonIDArr);
 
 	    var button = $(this);
 
 	    var homeId = buttonIDArr[2]; //for example "building1-apt15"
-	    console.log(aptNameArr);
 		var aptNameArr = homeId.split('-');
-		console.log(aptNameArr);
 
 		var aptShortName = aptNameArr[1];//for example "apt15"
 		var aptNum = aptShortName.slice(3);
-
-		console.log(fn +" "+ ln);
-		console.log(homeId);
-		console.log(aptNum);
 
 	  	var settings = {
 		  "async": true,
@@ -225,8 +191,6 @@ $(document).ready(function(){
 		}
 
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
-		  console.log("SUCCESS!");
 		  var table = $('#residentTable_'+homeId).DataTable();
 		  table.row(button.closest("tr").get(0)).remove().draw();
 

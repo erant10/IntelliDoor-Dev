@@ -71,7 +71,6 @@ module.exports = {
 
     // PUT '\newBuilding' - create a building
     createBuilding(req,res,next) {
-        // TODO: 1. verify admin session
         bcrypt.hash(req.body.password, saltRounds, function(err, hashed) {
             if(err) {
                 res.send('there was an error when trying to hash the password.');
@@ -96,7 +95,6 @@ module.exports = {
 
     // PUT '\admin\newHome' - create Home
     createHome(req,res,next) {
-        // TODO: 1. verify admin session
         home.create(req.body, function(error, result) {
             if(error || result.status !== 200) {
                 res.status(result.status);
@@ -109,7 +107,6 @@ module.exports = {
 
     // PUT '\admin\:buildingId\:homeId\newResident' - create Resident
     createResident(req, res, next) {
-        // TODO: verify admin session
         var residentObj = req.body;
         // encrypt the password before adding the resident
         bcrypt.hash(residentObj.password, saltRounds, function(err, hashed) {
