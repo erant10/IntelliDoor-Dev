@@ -17,6 +17,7 @@ module.exports = {
      * @param {function} callback
      */
     create(homeId, personId, faceUrl, isGuest, description, callback) {
+        console.log("homeId: " + homeId + "\npersonId: " + personId + "\nurl: " + faceUrl + "\nisGuest: " + isGuest + "\ndesc: " + description)
         Person.addFace(homeId, personId, faceUrl, function(error, results) {
             if(error || results.status !== 200) {
                 callback(error, {

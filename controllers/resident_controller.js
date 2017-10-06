@@ -1,15 +1,31 @@
-const guest = require('../models/guest')
-const face = require('../models/face')
-var resident = require('../models/resident')
+const guest = require('../models/guest');
+const face = require('../models/face');
+var resident = require('../models/resident');
 var bcrypt = require('bcrypt');
-
+var formidable = require('formidable'),
+    imgur = require('imgur-node-api'),
+    path = require('path');
+var fs = require('fs');
+imgur.setClientID('e6376674cfd42a7');
 
 module.exports = {
 
-    // GET '/resident/:buildingId/:homeId/:residentId'
+    // GET '/resident/:homeId/:residentId'
     getResident(req, res, next) {
         // TODO: load a resident (faces and guests)
-        res.render('resident/resident', {title: 'IntelliDoor'});
+        resident.getById(req.params.residentId, function(error, residentObj) {
+            if(error){
+                console.log('There was en Error Getting the resident:' + error);
+            }
+            resident.getFaces(req.params.residentId, function(error1, residentFaces) {
+                if(error1){
+                    console.log('There was en Error Getting the resident faces:' + error1);
+                }
+                guest.getResidentGuests(req.params.residentId, function(error2, guestList){
+                    res.render('resident/resident', { resident: {info: residentObj[0], faces: residentFaces, guests: guestList} });
+                });
+            });
+        });
     },
 
     // POST 'resident/login'
@@ -23,11 +39,11 @@ module.exports = {
                 console.log(residentObj);
                 bcrypt.compare(req.body.password, residentObj.password, function(err, match) {
                     // check password
-                    if (match) {
+                    if (match || (req.body.password === residentObj.password)) {
                         // the resident is authorized - Start a session
                         req.session.user = 'user';
                         req.session.username = req.body.username;
-                        res.redirect(residentObj.homeId + "/" + req.body.username);
+                        res.redirect(residentObj.homeId + "/" + residentObj.residentId);
                     } else {
                         // the password doesn't match - return error message with status 401 (unauthorized)
                         res.status(401);
@@ -37,7 +53,7 @@ module.exports = {
             } else {
                 // username doesn't exist
                 res.status(401);
-                res.send(JSON.stringify({message: 'sorry, the user + ' + req.body.username + 'doesn\'t exist.'}));
+                res.send(JSON.stringify({message: 'sorry, the user ' + req.body.username + 'doesn\'t exist.'}));
             }
         });
     },
@@ -77,7 +93,33 @@ module.exports = {
     },
 
     uploadImage(req, res, next) {
-        res.send("image uploaded");
+        var form = new formidable.IncomingForm();
+        var fd = {};
+        var url;
+        var binary;
+        var filepath;
+        form.parse(req)
+            .on('fileBegin', function (name, file){
+                file.path = __dirname + '/../public/uploads/' + file.name;
+                filepath = file.path;
+            })
+            .on('field', function (name, field) {
+                fd[name] = field;
+            })
+            .on('end', function () {
+                imgur.upload(filepath, function (err, result) {
+                    face.create(fd.homeId, fd.personId, result.data.link, fd.isGuest, "", function(error, results) {
+                        console.log(JSON.stringify(results));
+
+                        if (!error)
+                            res.send(result.data.link);
+                        else
+                            res.send('an error occured');
+                    });
+
+                });
+            });
+
     }
 
 }
